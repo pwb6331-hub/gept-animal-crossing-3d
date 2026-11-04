@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <rect width="1200" height="800" fill="#060b18"/>
+  <rect x="40" y="30" width="1120" height="90" rx="16" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="2"/>
+  <text x="70" y="70" font-family="sans-serif" font-weight="900" font-size="28" fill="#34d399">【STELLA 初級口說】覆述・朗讀短文・回答問題 三大題型全方位破題心法</text>
+  <text x="70" y="102" font-family="sans-serif" font-size="16" fill="#94a3b8">意群停頓 (Sense Groups) ｜ 聲調升降調 (Intonation) ｜ 連音 (Linking) 5 級分標準示範</text>
+
+  <!-- Part 1 -->
+  <g transform="translate(60, 150)">
+    <rect width="340" height="380" rx="14" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+    <rect x="0" y="0" width="340" height="60" rx="14" fill="#047857"/>
+    <text x="170" y="40" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff">第一部分：覆述 (Repeat)</text>
+    <text x="30" y="95" font-family="sans-serif" font-weight="bold" font-size="16" fill="#34d399">🎯 核心評分：發音、重音、流利</text>
+    <text x="30" y="125" font-family="sans-serif" font-size="14" fill="#e2e8f0">聽完音訊後，立即覆誦出整句。</text>
+    <rect x="20" y="145" width="300" height="110" rx="8" fill="#1e293b"/>
+    <text x="35" y="172" font-family="sans-serif" font-weight="bold" font-size="14" fill="#facc15">💡 5 秒短期記憶法：</text>
+    <text x="35" y="196" font-family="sans-serif" font-size="13" fill="#cbd5e1">1. 抓住「主詞 + 動詞」核心骨架</text>
+    <text x="35" y="218" font-family="sans-serif" font-size="13" fill="#cbd5e1">2. 嘴型跟著默唸（影子跟讀）</text>
+    <text x="35" y="240" font-family="sans-serif" font-size="13" fill="#cbd5e1">3. 音調起伏跟隨母語者複製</text>
+    <rect x="20" y="270" width="300" height="85" rx="8" fill="#1e293b"/>
+    <text x="35" y="295" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ef4444">⚠️ 常見致命傷：</text>
+    <text x="35" y="318" font-family="sans-serif" font-size="13" fill="#fca5a5">• 漏字（特別是 a / an / the / -s）</text>
+    <text x="35" y="340" font-family="sans-serif" font-size="13" fill="#fca5a5">• 結尾音被吞掉（如 stopped, asked）</text>
+  </g>
+
+  <!-- Part 2 -->
+  <g transform="translate(430, 150)">
+    <rect width="340" height="380" rx="14" fill="#0f172a" stroke="#3b82f6" stroke-width="2"/>
+    <rect x="0" y="0" width="340" height="60" rx="14" fill="#1d4ed8"/>
+    <text x="170" y="40" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff">第二部分：朗讀 (Read Aloud)</text>
+    <text x="30" y="95" font-family="sans-serif" font-weight="bold" font-size="16" fill="#60a5fa">🎯 核心評分：意群切割、節奏抑揚</text>
+    <text x="30" y="125" font-family="sans-serif" font-size="14" fill="#e2e8f0">準備 1 分鐘，朗讀短文 1 分鐘。</text>
+    <rect x="20" y="145" width="300" height="110" rx="8" fill="#1e293b"/>
+    <text x="35" y="172" font-family="sans-serif" font-weight="bold" font-size="14" fill="#facc15">💡 意群切割口訣 (Chunking)：</text>
+    <text x="35" y="196" font-family="sans-serif" font-size="13" fill="#cbd5e1">在「標點、連接詞、介系詞片語」</text>
+    <text x="35" y="218" font-family="sans-serif" font-size="13" fill="#cbd5e1">前微停 0.3 秒，絕不在詞組中斷開！</text>
+    <text x="35" y="240" font-family="sans-serif" font-size="13" fill="#38bdf8">例: [Yesterday afternoon,] / [I went...]</text>
+    <rect x="20" y="270" width="300" height="85" rx="8" fill="#1e293b"/>
+    <text x="35" y="295" font-family="sans-serif" font-weight="bold" font-size="14" fill="#38bdf8">🌊 升降調規律：</text>
+    <text x="35" y="318" font-family="sans-serif" font-size="13" fill="#93c5fd">• 陳述句句尾 ↘ 降調</text>
+    <text x="35" y="340" font-family="sans-serif" font-size="13" fill="#93c5fd">• Yes/No 問句 ↗ 升調；WH問句 ↘ 降調</text>
+  </g>
+
+  <!-- Part 3 -->
+  <g transform="translate(800, 150)">
+    <rect width="340" height="380" rx="14" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="0" y="0" width="340" height="60" rx="14" fill="#b45309"/>
+    <text x="170" y="40" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff">第三部分：回答問題 (Questions)</text>
+    <text x="30" y="95" font-family="sans-serif" font-weight="bold" font-size="16" fill="#fbbf24">🎯 核心評分：即時應對、句構完整</text>
+    <text x="30" y="125" font-family="sans-serif" font-size="14" fill="#e2e8f0">每題聽完後，於 15 秒內作答。</text>
+    <rect x="20" y="145" width="300" height="110" rx="8" fill="#1e293b"/>
+    <text x="35" y="172" font-family="sans-serif" font-weight="bold" font-size="14" fill="#facc15">💡 3+2 黃金回答模板：</text>
+    <text x="35" y="196" font-family="sans-serif" font-size="13" fill="#cbd5e1">1. [Direct Answer] 直接回答 Yes/No 或主旨</text>
+    <text x="35" y="218" font-family="sans-serif" font-size="13" fill="#cbd5e1">2. [Reason] "Because I really like..."</text>
+    <text x="35" y="240" font-family="sans-serif" font-size="13" fill="#cbd5e1">3. [Example/Detail] "For example, last week..."</text>
+    <rect x="20" y="270" width="300" height="85" rx="8" fill="#1e293b"/>
+    <text x="35" y="295" font-family="sans-serif" font-weight="bold" font-size="14" fill="#fbbf24">🚫 絕對禁止單字作答：</text>
+    <text x="35" y="318" font-family="sans-serif" font-size="13" fill="#fde68a">問: "Do you like sports?"</text>
+    <text x="35" y="340" font-family="sans-serif" font-size="13" fill="#fde68a">禁只說 "Yes!" ➔ 扣至 2 級分！</text>
+  </g>
+
+  <!-- Waveform Visual Diagram -->
+  <g transform="translate(60, 560)">
+    <rect width="1080" height="200" rx="14" fill="#1e293b" stroke="#334155"/>
+    <text x="35" y="35" font-family="sans-serif" font-weight="bold" font-size="18" fill="#38bdf8">🎧 擬真語調音波 (Pitch &amp; Intonation Radar)："Do you enjoy reading books on rainy days?"</text>
+    <path d="M 50 120 Q 200 60 350 130 T 650 90 T 950 50 L 1020 40" fill="none" stroke="#22d3ee" stroke-width="4"/>
+    <circle cx="50" cy="120" r="6" fill="#38bdf8"/>
+    <text x="40" y="150" font-family="sans-serif" font-size="13" fill="#94a3b8">Do you (平)</text>
+    <circle cx="200" cy="75" r="7" fill="#f43f5e"/>
+    <text x="180" y="55" font-family="sans-serif" font-weight="bold" font-size="14" fill="#f43f5e">en-JOY (重音高峰)</text>
+    <circle cx="350" cy="130" r="6" fill="#38bdf8"/>
+    <text x="330" y="160" font-family="sans-serif" font-size="13" fill="#94a3b8">reading books</text>
+    <circle cx="650" cy="90" r="7" fill="#facc15"/>
+    <text x="630" y="70" font-family="sans-serif" font-weight="bold" font-size="14" fill="#facc15">on RAIN-y (重音次峰)</text>
+    <circle cx="950" cy="50" r="8" fill="#4ade80"/>
+    <text x="940" y="30" font-family="sans-serif" font-weight="bold" font-size="16" fill="#4ade80">DAYS? ↗ (Yes/No問句句末升調)</text>
+  </g>
+</svg>

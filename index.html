@@ -1,0 +1,2969 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>【動物森友會 3D 英檢微縮群島】STELLA(初級複試) ＆ JENNY(中級複試) 全科通用引擎 (ACNH Edition v2.0)</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Three.js r128 & OrbitControls & Canvas Confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <!-- Google Fonts: 思源黑體 Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #060b18;
+      color: #f1f5f9;
+      user-select: none;
+    }
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.82);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    /* 3D 浮空防重疊標籤 */
+    .billboard-pin {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 20;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+      will-change: transform, left, top;
+    }
+    .billboard-pin:hover {
+      transform: translate(-50%, -115%) scale(1.08);
+      z-index: 30;
+    }
+    /* 滾動條樣式 */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.5);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.8);
+    }
+    /* 動畫效果 */
+    @keyframes pulseBeacon {
+      0%, 100% { opacity: 0.85; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 0 10px #38bdf8); }
+    }
+    .pulse-beacon {
+      animation: pulseBeacon 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="relative w-full h-full">
+
+  <!-- 3D WebGL 畫布容器 -->
+  <div id="webgl-container" class="absolute inset-0 z-0">
+    <canvas id="webgl-canvas"></canvas>
+  </div>
+
+  <!-- 3D 空間浮動標籤與人物層 (2D Screen-space anti-overlap layer) -->
+  <div id="pins-layer" class="absolute inset-0 pointer-events-none z-10 overflow-hidden"></div>
+
+  <!-- 頂部主導航列 (Top Navigation Header) -->
+  <header class="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+    <!-- 左側系統標題與主徽章 -->
+    <div class="pointer-events-auto flex items-center space-x-3 glass-panel px-4 py-2.5 rounded-2xl border border-sky-500/30">
+      <div class="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-sky-500/30">
+        <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
+        <div class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-slate-900 animate-pulse"></div>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-black tracking-wider uppercase px-2 py-0.5 rounded-md bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-sm">動森 3D 英檢群島</span>
+          <span class="text-[11px] text-sky-400 font-bold tracking-widest">ACNH 旗艦版</span>
+        </div>
+        <h1 class="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5 mt-0.5">
+          動森英語島 ｜ STELLA <span class="text-emerald-300 text-xs font-bold">(初級)</span> ＆ JENNY <span class="text-amber-300 text-xs font-bold">(中級)</span>
+          <span class="text-xs font-normal text-slate-400 hidden md:inline">｜ 3D 互動英檢微縮群島</span>
+        </h1>
+      </div>
+    </div>
+
+    <!-- 中間島嶼快速切換按鈕 (4 大島嶼) -->
+    <nav class="hidden lg:flex items-center space-x-1.5 pointer-events-auto glass-panel p-1.5 rounded-2xl border border-white/10 shadow-xl">
+      <button onclick="flyToIsland('unit1')" class="nav-island-btn px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/60" id="nav-btn-unit1">
+        <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+        STELLA 初級寫作
+      </button>
+      <button onclick="flyToIsland('unit2')" class="nav-island-btn px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/60" id="nav-btn-unit2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+        STELLA 初級口說
+      </button>
+      <button onclick="flyToIsland('unit3')" class="nav-island-btn px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/60" id="nav-btn-unit3">
+        <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+        JENNY 中級寫作
+      </button>
+      <button onclick="flyToIsland('unit4')" class="nav-island-btn px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/60" id="nav-btn-unit4">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+        JENNY 中級口說
+      </button>
+      <div class="h-4 w-px bg-slate-700 mx-1"></div>
+      <button onclick="resetCameraOverview()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold text-sky-400 hover:bg-sky-500/20 transition flex items-center gap-1" title="回到宏觀宇宙全景">
+        <i class="fa-solid fa-earth-americas"></i> 全景
+      </button>
+    </nav>
+
+    <!-- 右上快捷操作工具列 (Right Controls) -->
+    <div class="pointer-events-auto flex items-center space-x-2">
+      <!-- 標籤開關 -->
+      <button onclick="togglePins()" id="btn-toggle-pins" class="w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-slate-300 hover:text-sky-400 hover:border-sky-500/40 transition shadow-lg" title="切換浮空標籤顯示/隱藏">
+        <i class="fa-solid fa-tags text-sm"></i>
+      </button>
+      <!-- 音效/語音開關 -->
+      <button onclick="toggleSoundFX()" id="btn-toggle-sound" class="w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-emerald-400 hover:border-emerald-500/40 transition shadow-lg" title="開啟/關閉名師口白導覽">
+        <i class="fa-solid fa-volume-high text-sm"></i>
+      </button>
+      <!-- 說明手冊 -->
+      <button onclick="toggleHelpModal()" class="w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-amber-400 hover:border-amber-500/40 transition shadow-lg" title="操作指引與名師手冊">
+        <i class="fa-solid fa-circle-question text-sm"></i>
+      </button>
+      <!-- 打開右側學習抽屜 -->
+      <button onclick="openDrawerIfClosed('notes')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-sky-500/25 transition">
+        <i class="fa-solid fa-book-open"></i>
+        <span>學習抽屜</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 左下角：點擊島嶼/人物/生物彈出之名師對話卡 (Mentor Dialogue Card) -->
+  <div id="mentor-dialogue-card" class="absolute bottom-6 left-6 z-20 max-w-sm sm:max-w-md w-full glass-panel p-4 rounded-3xl border border-sky-500/30 shadow-2xl transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-none">
+    <div class="flex items-start gap-3">
+      <!-- 導師頭像 -->
+      <div id="mentor-avatar-box" class="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 p-0.5 flex-shrink-0 shadow-lg shadow-purple-500/30">
+        <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center overflow-hidden">
+          <i id="mentor-icon" class="fa-solid fa-user-astronaut text-xl text-sky-300"></i>
+        </div>
+        <div id="mentor-status-led" class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-slate-950 animate-ping"></div>
+      </div>
+      <!-- 對話內容區 -->
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="mentor-name" class="font-black text-sm text-white">STELLA 導師</span>
+            <span id="mentor-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">初級複試隊長</span>
+          </div>
+          <button onclick="closeMentorCard()" class="text-slate-400 hover:text-white transition p-1">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+        </div>
+        <p id="mentor-speech" class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+          歡迎來到 3D 英檢微縮群島！請點選島上的地標、皮克敏精靈或生物手辦，我會親自為你拆解複試說寫考點！
+        </p>
+        <!-- 快捷動作按鈕 -->
+        <div class="flex items-center gap-2 mt-3 pt-2 border-t border-slate-700/60">
+          <button onclick="speakCurrentEntity()" id="btn-mentor-speak" class="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-[11px] font-bold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-volume-high text-[10px]"></i> 語音朗讀
+          </button>
+          <button onclick="openDrawerWithTab('notes')" class="px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-[11px] font-bold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-file-lines text-[10px]"></i> 查看重點筆記
+          </button>
+          <button onclick="openDrawerWithTab('lab')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-[11px] font-bold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-flask text-[10px]"></i> 開啟實驗室
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右側 5-Tab 學習抽屜面板 (Right Learning Drawer) -->
+  <aside id="learning-drawer" class="fixed top-0 right-0 bottom-0 w-full sm:w-[480px] lg:w-[560px] z-30 glass-panel border-l border-white/10 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-out">
+    <!-- 抽屜頂部標題與 Tab 切換列 -->
+    <div class="p-4 border-b border-white/10 flex-shrink-0 bg-slate-900/60">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-400">
+            <i class="fa-solid fa-compass-drafting text-sm"></i>
+          </div>
+          <div>
+            <h2 id="drawer-title" class="text-sm font-black text-white">STELLA 初級寫作聖殿</h2>
+            <p id="drawer-subtitle" class="text-[11px] text-slate-400">句子改寫與看圖寫作金字塔</p>
+          </div>
+        </div>
+        <button onclick="closeDrawer()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- 5-Tab 按鈕列 -->
+      <div class="grid grid-cols-5 gap-1 p-1 bg-slate-950/60 rounded-xl border border-white/5">
+        <button onclick="switchTab('notes')" id="tab-btn-notes" class="drawer-tab-btn py-1.5 text-center rounded-lg text-[11px] font-bold text-sky-400 bg-slate-800 shadow transition flex flex-col items-center">
+          <i class="fa-solid fa-book-bookmark text-xs mb-0.5"></i>
+          <span>課程重點</span>
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="drawer-tab-btn py-1.5 text-center rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition flex flex-col items-center">
+          <i class="fa-solid fa-star-half-stroke text-xs mb-0.5"></i>
+          <span>英檢評量</span>
+        </button>
+        <button onclick="switchTab('video')" id="tab-btn-video" class="drawer-tab-btn py-1.5 text-center rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition flex flex-col items-center">
+          <i class="fa-solid fa-circle-play text-xs mb-0.5"></i>
+          <span>教學影音</span>
+        </button>
+        <button onclick="switchTab('lab')" id="tab-btn-lab" class="drawer-tab-btn py-1.5 text-center rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition flex flex-col items-center">
+          <i class="fa-solid fa-flask-vial text-xs mb-0.5"></i>
+          <span>互動實驗</span>
+        </button>
+        <button onclick="switchTab('stella')" id="tab-btn-stella" class="drawer-tab-btn py-1.5 text-center rounded-lg text-[11px] font-bold text-slate-400 hover:text-white transition flex flex-col items-center">
+          <i class="fa-solid fa-seedling text-xs mb-0.5"></i>
+          <span>跨域任務</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 抽屜內容主滾動區 -->
+    <div id="drawer-content" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <!-- 內容將由 JavaScript 根據 activeTab 及 currentUnit 動態渲染 -->
+    </div>
+  </aside>
+
+  <!-- 專業圖解 Pan & Zoom 燈箱 Modal (全幅零裁切 350% 放大) -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex flex-col items-center justify-between p-4 hidden">
+    <!-- 燈箱頂部工具列 -->
+    <div class="w-full max-w-6xl flex items-center justify-between px-4 py-2 border-b border-white/10 text-white z-10">
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-black px-2 py-0.5 rounded bg-sky-500 text-white" id="lightbox-badge">INFOGRAPHIC 1/6</span>
+        <h3 class="text-sm font-bold text-slate-200" id="lightbox-title">圖解資訊卡</h3>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="zoomLightbox(0.25)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-xs" title="放大">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+        </button>
+        <button onclick="zoomLightbox(-0.25)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-xs" title="縮小">
+          <i class="fa-solid fa-magnifying-glass-minus"></i>
+        </button>
+        <button onclick="resetLightboxZoom()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-xs" title="還原 100%">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+        <div class="h-4 w-px bg-slate-700 mx-1"></div>
+        <button onclick="closeLightbox()" class="w-8 h-8 rounded-lg bg-rose-600/80 hover:bg-rose-500 flex items-center justify-center text-xs text-white" title="關閉燈箱">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 圖片主視窗 (支援拖曳平移與滾輪無段放大) -->
+    <div id="lightbox-viewport" class="relative flex-1 w-full max-w-6xl overflow-hidden flex items-center justify-center cursor-grab my-2">
+      <img id="lightbox-img" src="" alt="教學圖解" class="max-h-full max-w-full object-contain transition-transform duration-75 select-none pointer-events-auto">
+    </div>
+
+    <!-- 燈箱底部 6 張圖快速切換導航列 -->
+    <div class="w-full max-w-6xl flex items-center justify-between px-4 py-2 border-t border-white/10 z-10">
+      <button onclick="stepLightbox(-1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5">
+        <i class="fa-solid fa-chevron-left"></i> 上一張
+      </button>
+      <div class="flex items-center gap-2 overflow-x-auto py-1" id="lightbox-thumbs">
+        <!-- 6 張縮圖由 JS 動態生成 -->
+      </div>
+      <button onclick="stepLightbox(1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5">
+        下一張 <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- 操作指引與名師手冊 Modal (Help Modal) -->
+  <div id="help-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-panel max-w-xl w-full p-6 rounded-3xl border border-sky-500/40 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center">
+            <i class="fa-solid fa-gamepad text-base"></i>
+          </div>
+          <h3 class="text-base font-black text-white">3D 探索操控指引 ＆ 英檢複試通關心法</h3>
+        </div>
+        <button onclick="toggleHelpModal()" class="text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs leading-relaxed text-slate-300">
+        <div class="p-3 rounded-2xl bg-slate-900/60 border border-white/5 space-y-1.5">
+          <div class="font-bold text-sky-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-computer-mouse"></i> 3D 空間視角控制
+          </div>
+          <p>• <b>旋轉視野</b>：按住滑鼠左鍵（或單指觸控滑動）任意旋轉 3D 星際微縮宇宙。</p>
+          <p>• <b>平移視角</b>：按住滑鼠右鍵（或雙指平移）在宇宙間平行滑動。</p>
+          <p>• <b>縮放距離</b>：滾動滑鼠滾輪（或雙指捏合）可無限拉近至皮克敏手辦或拉遠至全景。</p>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-slate-900/60 border border-white/5 space-y-1.5">
+          <div class="font-bold text-emerald-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-hand-pointer"></i> 互動點擊機制
+          </div>
+          <p>• <b>點擊島嶼／人物／生物</b>：鏡頭自動平滑飛行聚焦，並彈出左下角名師口白對話卡與語音朗讀。</p>
+          <p>• <b>右側 5-Tab 學習抽屜</b>：隨時點擊右上角「學習抽屜」，查看重點筆記、闖關評量、教學影音與專屬實驗室。</p>
+          <p>• <b>圖解 Pan & Zoom 燈箱</b>：點擊筆記中的任何資訊圖，即可啟動高達 350% 向量級縮放燈箱。</p>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-gradient-to-r from-sky-500/10 to-indigo-500/10 border border-sky-500/20">
+          <div class="font-bold text-amber-300">🎓 名師衝刺鐵律（初級 STELLA ＆ 中級 JENNY）：</div>
+          <p class="mt-1 text-slate-200">
+            初級複試重在「搭配詞精準、句型無 Chinglish、口說不單字化」；中級複試重在「120字兩段式黃金骨架、分詞構句逆襲、看圖敘述時態一致性與 PREP 答題法」。依循 4 座微縮島嶼循序演練，穩拿 5 級分滿分！
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="toggleHelpModal()" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition shadow-lg shadow-sky-500/30">
+          明白，開始探險！
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// =============================================================================
+// 全民英檢初級 (STELLA) ＆ 中級 (JENNY) 複試 3D 互動微縮群島核心數據
+// =============================================================================
+const CHAPTER_DATA = {
+  unit1: {
+    code: 'STELLA-W',
+    badge: 'STELLA 初級寫作',
+    title: '初級寫作聖殿：句子改寫與看圖寫作金字塔',
+    themeColor: 0xec4899,
+    themeHex: '#ec4899',
+    islandPos: { x: -32, y: 0, z: -28 },
+    cameraPos: { x: -32, y: 15, z: 2 },
+    mentor: {
+      name: '狸克 社長 (Tom Nook) ＆ STELLA',
+      badge: '初級複試總導師',
+      speech: '哈囉！我是狸克！歡迎來到動森英檢複試島！初級寫作第一部分「單句改寫」與第二部分「50字看圖連環故事」就像建造無人島一樣，必須精確運用花費四大金剛 spend / take / cost / pay，還有茶茶丸在幫忙搬運故事水晶磚，絕對不能寫出中式英文 Chinglish 喔，哩哩！'
+    },
+    creature: {
+      name: '動森鈴錢樹 ＆ 茶茶丸 (Dom)',
+      badge: '愛哭臉綿羊島民'
+      desc: '人氣島民茶茶丸頂著橘色捲角與水汪汪大眼睛，在鈴錢樹下協力搬運 50 字看圖故事木箱，提醒大家過去式時態一定要鎖定！'
+    },
+    pikmin: {
+      name: '鈴錢袋金幣樹 (Bell Money Tree)',
+      badge: '耐火拔雷小隊',
+      desc: '紅皮克敏擁有長尖鼻與耐火特質，正在島上協力搬運 50 字看圖故事水晶磚，幫你清除文法地雷！'
+    },
+    landmark: {
+      name: '花費四大金剛天平秤 ＆ 50字水晶畫架',
+      desc: '立體鐫刻 spend (人/ing)、take (It/時間/To V)、cost (物/錢)、pay (人/for)，以及看圖寫作「起承轉合」魔術四部曲。'
+    },
+    notes: `
+      <div class="space-y-4">
+        <div class="p-3.5 rounded-2xl bg-pink-500/10 border border-pink-500/20 text-xs">
+          <div class="font-black text-pink-400 text-sm mb-1">【第一部分：單句改寫與合併】三大萬年必考句型</div>
+          <p class="text-slate-200 leading-relaxed mb-2">出題委員每回必考的句型轉換公式，掌握動詞形態與連接詞對稱性：</p>
+          <div class="space-y-2">
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-white/5">
+              <span class="text-amber-300 font-bold">1. not only... but also...（不僅…而且…）</span>
+              <p class="text-slate-300 mt-1">對稱原則：not only 後面接名詞，but also 後面也必須接名詞；接形容詞就接形容詞！</p>
+              <div class="text-emerald-400 font-mono text-[11px] mt-1">例: She is not only diligent but also highly creative.</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-white/5">
+              <span class="text-pink-300 font-bold">2. too... to... ➔ so... that... can't...（太…以致於不能…）</span>
+              <p class="text-slate-300 mt-1">注意時態！前面若是 is/are，後面用 can't；前面若是 was/were，後面 100% 必須改用 couldn't！</p>
+              <div class="text-emerald-400 font-mono text-[11px] mt-1">例: The box was too heavy for him to carry. ➔ The box was so heavy that he couldn't carry it.</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-white/5">
+              <span class="text-sky-300 font-bold">3. 花費四大金剛秒殺表 (Spend / Take / Cost / Pay)</span>
+              <p class="text-slate-300 mt-1">看到人開頭花錢/時間接 -ing 用 spend；看到 It 開頭花時間接 to V 用 take；看到物品開頭花錢用 cost！</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-white/10 text-xs">
+          <div class="font-black text-sky-400 text-sm mb-1">【第二部分：50字看圖連環故事】起承轉合魔術公式</div>
+          <p class="text-slate-300 leading-relaxed mb-2">評分委員專抓「時態一致性（過去式）」與「邏輯連接詞」。按照四格骨架鋪陳：</p>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="p-2 rounded-lg bg-slate-800/80 border border-sky-500/30">
+              <span class="font-bold text-sky-300">① 起 (Setting)</span>
+              <p class="text-slate-400 mt-0.5">時間、人物、地點交代。例: "Yesterday afternoon, Peter and his sister went to the park."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-800/80 border border-pink-500/30">
+              <span class="font-bold text-pink-300">② 承 (Action)</span>
+              <p class="text-slate-400 mt-0.5">動作進行與情節開展。例: "While they were flying a kite happily, the wind suddenly blew hard."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-800/80 border border-amber-500/30">
+              <span class="font-bold text-amber-300">③ 轉 (Crisis)</span>
+              <p class="text-slate-400 mt-0.5">意外狀況發生。例: "Unfortunately, the kite got stuck on a tall tree."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-800/80 border border-emerald-500/30">
+              <span class="font-bold text-emerald-300">④ 合 (Ending)</span>
+              <p class="text-slate-400 mt-0.5">化解危機與當下心情。例: "With the help of a kind police officer, they got it back and felt relieved."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 點擊放大圖解按鈕 -->
+        <div class="p-3 rounded-2xl bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/30 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-white text-xs">視覺圖解卡：四大金剛與50字公式</div>
+            <div class="text-[10px] text-pink-300">支援滾輪無段放大至 350%</div>
+          </div>
+          <button onclick="openLightbox(0)" class="px-3 py-1.5 rounded-xl bg-pink-500 hover:bg-pink-400 text-white font-bold text-xs transition flex items-center gap-1 shadow">
+            <i class="fa-solid fa-expand"></i> 檢視大圖
+          </button>
+        </div>
+      </div>
+    `,
+    quizzes: [
+      {
+        id: 'q1-1',
+        title: '花費動詞判斷',
+        question: 'It ______ Jenny nearly two hours to finish reading this challenging novel yesterday.',
+        options: ['spent', 'cost', 'took', 'paid'],
+        answer: 2,
+        explain: '【名師破題】主詞為虛主詞「It」，受詞為時間「two hours」，後面接「to finish (To + V)」，根據四大金剛口訣：It 開頭花時間接 to V，秒選 took！'
+      },
+      {
+        id: 'q1-2',
+        title: '初級必考搭配詞',
+        question: 'Before taking the midterm exam, you should ______ all the key formulas and vocabulary.',
+        options: ['review', 'eat', 'write', 'open'],
+        answer: 0,
+        explain: '【名師破題】考前「複習」公式與單字，使用 review。此題為英檢閱讀與改寫題核心搭配詞。'
+      },
+      {
+        id: 'q1-3',
+        title: 'too... to 句型轉換',
+        question: 'The water in the cup was too hot for the baby to drink. ＝ The water was so hot ______.',
+        options: [
+          'that the baby can drink it',
+          'that the baby couldn\'t drink it',
+          'to drink it by the baby',
+          'that the baby could drink'
+        ],
+        answer: 1,
+        explain: '【名師破題】too... to 改為 so... that 時，原句動詞為過去式 was，故 that 子句必須用 couldn\'t + 原形動詞；且 drink 後面務必還原受詞 it！'
+      },
+      {
+        id: 'q1-4',
+        title: '時間介系詞金字塔',
+        question: 'We decided to hold a birthday surprise party for Emily ______ Sunday afternoon.',
+        options: ['at', 'in', 'on', 'with'],
+        answer: 2,
+        explain: '【名師破題】時間介系詞口訣：只要有指出「特定某一天」（Sunday afternoon 是星期天的下午），一律由 on 接管！'
+      },
+      {
+        id: 'q1-5',
+        title: '看圖寫作時態陷阱',
+        question: '在英檢初級複試看圖寫作中，敘述「上週日發生的一連串事件」時，整篇文章的主體動詞應使用何種時態？',
+        options: [
+          '現在進行式 (is/are + V-ing)',
+          '過去式 (Past Tense, V-ed / irregular)',
+          '未來式 (will + V)',
+          '現在完成式 (has/have + p.p.)'
+        ],
+        answer: 1,
+        explain: '【名師破題】初級看圖寫作絕大多數為過去發生的故事，主體時態務必 100% 統一使用過去簡單式，混用現在式會被扣 1~2 級分！'
+      },
+      {
+        id: 'q1-6',
+        title: '搭配詞防 Chinglish 診斷',
+        question: '下列何者為純正母語英文搭配詞（Native Collocation），而非中式英文？',
+        options: [
+          'eat medicine when you catch a cold',
+          'write a diary every evening',
+          'take medicine when you catch a cold',
+          'make a test in the classroom'
+        ],
+        answer: 2,
+        explain: '【名師破題】英文吃藥絕不用 eat，只能用「take medicine」；寫日記用「keep a diary」；考試用「take a test」。恰比大嘴怪最愛吃 eat medicine 這種中式英文！'
+      }
+    ],
+    videos: [
+      {
+        title: '1-1 初級寫作破題：單句改寫與合併三大神技',
+        duration: '06:45',
+        desc: '資深名師拆解 not only... but also、too... to 與花費四大金剛，教你 3 秒抓出出題委員空格伏筆。',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+      },
+      {
+        title: '1-2 初級看圖寫作：50字三格連環故事「起承轉合」魔術模板',
+        duration: '07:20',
+        desc: '實戰拆解高頻連環圖題型，傳授過去式時態鎖定法與情節轉折形容詞加分技巧。',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+      }
+    ]
+  },
+
+  unit2: {
+    code: 'STELLA-S',
+    badge: 'STELLA 初級口說',
+    title: '初級口說迴音谷：覆述朗讀與情境對話迴音',
+    themeColor: 0x10b981,
+    themeHex: '#10b981',
+    islandPos: { x: 32, y: 0, z: -28 },
+    cameraPos: { x: 32, y: 15, z: 2 },
+    mentor: {
+      name: '西施惠 秘書 (Isabelle) ＆ 路易',
+      badge: '口說語音教官',
+      speech: '大家早安！我是西施惠！初級口說晨間廣播開始囉！第一部分覆述只要掌握 5 秒短期記憶抓出主動賓骨架；第二部分朗讀短文在標點與連接詞前自然微停（意群斷句）；第三部分回答問題一定要用 3+2 模板，絕不能只回答單字喔，鈴鈴！'
+    },
+    creature: {
+      name: '傲嬌小松鼠「小潤」(Marshal)',
+      badge: '白松鼠音律擔當'
+      desc: '小潤頂著淡黃瀏海與毛茸茸尾巴，拿著咖啡杯專注聆聽語調升降（Yes/No ↗ vs WH ↘），是島上的音調評測官！'
+    },
+    pikmin: {
+      name: '海灘神祕漂流瓶 (Message in a Bottle)',
+      badge: '大耳耐電小隊',
+      desc: '黃皮克敏頂著大精靈耳朵，頭頂綻放潔白花朵，專門捕捉語調中的重音（Stress）與升降調！'
+    },
+    landmark: {
+      name: '金色留聲機塔 ＆ 雙向情境電話亭',
+      desc: '高聳的留聲機大喇叭播放標準初級口說音訊，旁側配置雙向電話亭示範回答問題 3+2 公式。'
+    },
+    notes: `
+      <div class="space-y-4">
+        <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
+          <div class="font-black text-emerald-400 text-sm mb-1">【第一部分：覆述 (Repeat)】5 秒短期記憶法</div>
+          <p class="text-slate-200 leading-relaxed mb-2">每題播放一次，聽完嗶聲後立即複誦。常考 6~9 字完整句子：</p>
+          <div class="space-y-1.5 text-slate-300">
+            <p>• <b>聽結構不記單字</b>：抓住「誰（主詞）＋做了什麼事（動詞＋受詞）」。</p>
+            <p>• <b>影子默唸 (Shadowing)</b>：聽錄音的同時，嘴唇跟著微動默唸，複製節奏。</p>
+            <p>• <b>尾音不可吞掉</b>：特別注意過去式字尾 -ed (played [d], watched [t]) 與第三人稱單數 -s！</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-white/10 text-xs">
+          <div class="font-black text-sky-400 text-sm mb-1">【第二部分：朗讀短文】意群斷句 (Sense Groups)</div>
+          <p class="text-slate-300 leading-relaxed mb-2">準備 1 分鐘，朗讀 1 分鐘。絕不能像念經一樣平鋪直敘：</p>
+          <div class="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/20 space-y-1.5 text-[11px]">
+            <p class="text-amber-300 font-bold">範例短文斷句示範（/ 表示微停頓 0.3 秒）：</p>
+            <p class="text-slate-200 italic font-serif">
+              "Last Saturday morning, / my family decided to visit the local library. / When we arrived, / there were already many children / reading books quietly. / My brother found a fascinating storybook / about space exploration."
+            </p>
+            <p class="text-emerald-400 font-bold">口訣：標點符號必停頓、從屬連接詞前微停、介系詞片語前呼吸！</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs">
+          <div class="font-black text-amber-400 text-sm mb-1">【第三部分：回答問題】3+2 黃金回答架構</div>
+          <p class="text-slate-300 leading-relaxed mb-2">每題有 15 秒作答時間。絕對禁止只講一個單字！</p>
+          <div class="space-y-1 text-slate-200 text-[11px]">
+            <p><span class="text-sky-300 font-bold">1. [Direct Answer]</span> 直接回應：Yes, I do. / I enjoy playing basketball.</p>
+            <p><span class="text-pink-300 font-bold">2. [Reason]</span> 說明理由：Because it helps me relax after studying.</p>
+            <p><span class="text-emerald-300 font-bold">3. [Example/Detail]</span> 補充細節：I usually play it with my classmates on Friday afternoons.</p>
+          </div>
+        </div>
+
+        <!-- 點擊放大圖解按鈕 -->
+        <div class="p-3 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-white text-xs">視覺圖解卡：口說三題型破題心法與音波雷達</div>
+            <div class="text-[10px] text-emerald-300">支援滾輪無段放大至 350%</div>
+          </div>
+          <button onclick="openLightbox(1)" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs transition flex items-center gap-1 shadow">
+            <i class="fa-solid fa-expand"></i> 檢視大圖
+          </button>
+        </div>
+      </div>
+    `,
+    quizzes: [
+      {
+        id: 'q2-1',
+        title: '口說朗讀意群斷句',
+        question: '在朗讀句子 "My sister always drinks a glass of warm milk before going to bed." 時，最佳的停頓位置是何處？',
+        options: [
+          'My sister always / drinks a / glass of warm / milk',
+          'My sister always drinks a glass of warm milk / before going to bed.',
+          'My / sister / always drinks / a glass / of warm milk',
+          'My sister / always drinks a / glass of warm milk before / going to bed.'
+        ],
+        answer: 1,
+        explain: '【名師破題】朗讀時應以「主要子句完整意群 (drinks a glass of warm milk)」為單位，在時間副詞片語「before going to bed」之前進行自然微停頓，不可將動詞與受詞拆裂。'
+      },
+      {
+        id: 'q2-2',
+        title: '語調升降調判斷',
+        question: '問句 "Could you please pass me the salt on the table?" 在口說錄音時，句末應使用何種語調？',
+        options: [
+          '大幅降調 (Falling Intonation ↘)',
+          '升調 (Rising Intonation ↗)',
+          '完全平調 (Flat Tone)',
+          '忽高忽低混亂調'
+        ],
+        answer: 1,
+        explain: '【名師破題】以助動詞 Could 開頭的請求／Yes-No 問句，句尾最後一個核心字 (table) 必須使用「升調 ↗」以表達客氣與詢問。'
+      },
+      {
+        id: 'q2-3',
+        title: '初級口說回答問題評分標準',
+        question: '考官詢問："What is your favorite subject at school?" 下列哪種回答最能獲得 5 級分滿分？',
+        options: [
+          '"Math."',
+          '"My favorite subject is Math because it is interesting and I like solving difficult problems with my friends."',
+          '"I don\'t know."',
+          '"Yes, I have favorite subject."'
+        ],
+        answer: 1,
+        explain: '【名師破題】選項 B 完整符合「Direct Answer + Reason + Detail」3+2 滿分架構；選項 A 僅用單字回答會被降至 2 級分！'
+      },
+      {
+        id: 'q2-4',
+        title: '子音與母音連音 (Linking)',
+        question: '片語 "turn it off" 在母語口說快速朗讀時，真實發音最接近下列何者？',
+        options: [
+          '個別分開唸 [tɝn] [ɪt] [ɔf]',
+          '滑順連音 [tɝ-nɪ-tɔf]',
+          '把 it 吞掉唸成 [tɝn ɔf]',
+          '把 off 唸成 [tɝn it up]'
+        ],
+        answer: 1,
+        explain: '【名師破題】子音加母音連讀 (C + V)：turn 的尾音 [n] 與 it 的字首 [ɪ] 連成 [nɪ]；it 的尾音 [t] 與 off 的字首 [ɔ] 連成 [tɔf]，連起來讀作 [tɝ-nɪ-tɔf]。'
+      },
+      {
+        id: 'q2-5',
+        title: '覆述尾音精準度',
+        question: '錄音播放："Yesterday, they walked five kilometers along the river." 覆述時最容易犯的扣分錯誤為何？',
+        options: [
+          '把 walked 的過去式尾音 [t] 漏唸，唸成 walk',
+          '把 five 唸太清楚',
+          '語速太穩定',
+          '發音過於標準'
+        ],
+        answer: 0,
+        explain: '【名師破題】台灣考生覆述最常漏掉 -ed 與 -s 尾音！walked 結尾的 [t] 必須清晰發出，否則會被閱卷電腦與委員判定文法不全。'
+      },
+      {
+        id: 'q2-6',
+        title: 'WH 問句語調規則',
+        question: '疑問詞開頭的 WH 問句，例如："Where did you buy this beautiful jacket?" 句末語調通常為：',
+        options: [
+          '句末升調 ↗',
+          '句末降調 ↘',
+          '整句大叫',
+          '無聲氣音'
+        ],
+        answer: 1,
+        explain: '【名師破題】WH 疑問詞問句（Who, What, Where, When, Why, How）句尾通常為「降調 ↘」，與 Yes/No 問句的升調相反，切記不可混淆！'
+      }
+    ],
+    videos: [
+      {
+        title: '2-1 初級口說聽音覆述：5 秒短期記憶錨定與發音盲點',
+        duration: '06:10',
+        desc: '實戰演示如何抓住動詞骨架，克制緊張感，精準複製英語母語腔調與句尾時態音。',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+      },
+      {
+        title: '2-2 初級朗讀短文與回答問題：意群斷句 (Chunking) 與升降調',
+        duration: '08:15',
+        desc: '掌握標點與連接詞停頓節奏，示範 3+2 回答問題黃金模板，徹底告別單字化回答。',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'
+      }
+    ]
+  },
+
+  unit3: {
+    code: 'JENNY-W',
+    badge: 'JENNY 中級寫作',
+    title: '中級寫作聖殿：中譯英句構逆襲 ＆ 120字引導作文',
+    themeColor: 0x6366f1,
+    themeHex: '#6366f1',
+    islandPos: { x: -32, y: 0, z: 28 },
+    cameraPos: { x: -32, y: 15, z: 58 },
+    mentor: {
+      name: '傅達 館長 (Blathers) ＆ JENNY',
+      badge: '中級複試總導師',
+      speech: '呼嚕…啊！我是傅達館長！中級寫作第一部分「中譯英」如同鑑定稀有化石，必須精確找出 conduct a survey、draw a conclusion 等 200 組黃金搭配詞；第二部分 120 字兩段式寫作在傑克的協助下，用主題句與倒裝句搭建宏偉的博物館架構！'
+    },
+    creature: {
+      name: '西裝紳士貓「傑克」(Raymond)',
+      badge: '異色瞳文法紳士'
+      desc: '傑克戴著黑框眼鏡與商務西裝，異色雙瞳（左琥珀右翠綠）專挑 Chinglish 贅詞，守護 120 字引導作文的嚴密結構！'
+    },
+    pikmin: {
+      name: 'DIY 原木工作台 (DIY Workbench)',
+      badge: '水棲動名詞搬運隊',
+      desc: '圓鰓粉嘴的藍皮克敏在墨水池中穿梭，專門搬運「to + V-ing」八大天王晶體，抵禦文法干擾！'
+    },
+    landmark: {
+      name: '中譯英雙向天平拱門 ＆ 120字論文金字塔',
+      desc: '宏偉的天平拱門對比 Chinglish 與 Native 句構，金字塔上刻印兩段式結構：現象＋論點＋親身經歷＋收尾。'
+    },
+    notes: `
+      <div class="space-y-4">
+        <div class="p-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-xs">
+          <div class="font-black text-indigo-400 text-sm mb-1">【第一部分：中譯英】20 年官方聽診室 76 弱點單字精準命中</div>
+          <p class="text-slate-200 leading-relaxed mb-2">中譯英每題 4 分（共 2 題 8 分），閱卷委員專挑搭配詞與從屬子句給分：</p>
+          <div class="space-y-2 text-[11px]">
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-indigo-500/30">
+              <span class="text-amber-300 font-bold">1. 進行調查 ＆ 得出結論</span>
+              <p class="text-slate-300 mt-1">中文：「根據最近進行的一項調查，許多青少年睡眠不足。」</p>
+              <p class="text-rose-400">❌ 考生盲點：According to a survey made recently...</p>
+              <p class="text-emerald-400 font-bold">✅ 滿分句：According to a recent survey conducted by experts, a large percentage of teenagers suffer from sleep deprivation.</p>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-indigo-500/30">
+              <span class="text-pink-300 font-bold">2. 扮演角色 ＆ 造成損害</span>
+              <p class="text-slate-300 mt-1">中文：「運動在維持身心健康方面扮演關鍵角色，並能防止疾病對身體造成嚴重損害。」</p>
+              <p class="text-emerald-400 font-bold">✅ 滿分句：Exercise plays a crucial role in maintaining physical and mental health, preventing diseases from causing severe damage to our bodies.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-white/10 text-xs">
+          <div class="font-black text-purple-400 text-sm mb-1">【第二部分：120字引導作文】兩段式黃金骨架</div>
+          <p class="text-slate-300 leading-relaxed mb-2">引導寫作要求 100~140 字，分兩段鋪陳最為穩健：</p>
+          <div class="space-y-2 text-[11px]">
+            <div class="p-2.5 rounded-xl bg-slate-800/80 border border-purple-500/30">
+              <span class="text-purple-300 font-bold">第一段（約 50-60 字）：現象描述＋個人核心觀點</span>
+              <p class="text-slate-300 mt-1">開頭破題句：In recent years, the issue of [Topic] has attracted considerable attention. From my perspective, [Opinion] is essential because...</p>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-800/80 border border-pink-500/30">
+              <span class="text-pink-300 font-bold">第二段（約 60-70 字）：親身經歷證明＋未來展望與呼籲</span>
+              <p class="text-slate-300 mt-1">實例展開句：Taking my own experience as an example, last semester I... Although it was difficult initially, I managed to overcome it. In summary, only through persistence can we achieve success.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-xs">
+          <div class="font-black text-rose-400 text-sm mb-1">【文法防雷】介系詞 to + V-ing 八大天王</div>
+          <p class="text-slate-300 leading-relaxed">
+            look forward to / be accustomed to / be devoted to / object to / lead to / When it comes to / In addition to / pay attention to，後方一律接動名詞 (V-ing)，寫原形動詞直接扣分！
+          </p>
+        </div>
+
+        <!-- 點擊放大圖解按鈕 -->
+        <div class="p-3 rounded-2xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-white text-xs">視覺圖解卡：中級寫作骨架 ＆ 200 搭配詞對決表</div>
+            <div class="text-[10px] text-indigo-300">支援滾輪無段放大至 350%</div>
+          </div>
+          <button onclick="openLightbox(2)" class="px-3 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-xs transition flex items-center gap-1 shadow">
+            <i class="fa-solid fa-expand"></i> 檢視大圖
+          </button>
+        </div>
+      </div>
+    `,
+    quizzes: [
+      {
+        id: 'q3-1',
+        title: '中級中譯英搭配詞',
+        question: '根據最新研究，科學家們已對氣候變遷「進行深入調查」。空格應填入何者？ "Scientists have ______ an in-depth investigation into climate change."',
+        options: ['made', 'conducted', 'done', 'taken'],
+        answer: 1,
+        explain: '【名師破題】調查 (survey / investigation / research) 在母語中標準搭配為 conduct 或 carry out，中文直譯 make 或 do 為典型中式英文 Chinglish！'
+      },
+      {
+        id: 'q3-2',
+        title: 'to + V-ing 介系詞考點',
+        question: 'Emily is really looking forward to ______ her pen pal from Canada at the airport tomorrow.',
+        options: ['meet', 'meeting', 'met', 'have met'],
+        answer: 1,
+        explain: '【名師破題】look forward to 中的 to 是「介系詞」，後面 100% 必須接動名詞 (V-ing)，選原形動詞 meet 會被直接扣分！'
+      },
+      {
+        id: 'q3-3',
+        title: '分詞構句語法簡化',
+        question: '原句："Because they felt exhausted after the long hike, the tourists took a rest." 簡化為分詞構句應為：',
+        options: [
+          'Felt exhausted after the long hike, the tourists took a rest.',
+          'Feeling exhausted after the long hike, the tourists took a rest.',
+          'To feel exhausted after the long hike, the tourists took a rest.',
+          'Having feel exhausted after the long hike, the tourists took a rest.'
+        ],
+        answer: 1,
+        explain: '【名師破題】主詞 the tourists 與 feel 為主動關係，省略連接詞 Because 與主詞後，動詞 felt 變更為主動分詞「Feeling」，此為中級作文高分句構！'
+      },
+      {
+        id: 'q3-4',
+        title: '被動語態誤用陷阱',
+        question: '下列哪一個動詞片語「天生自帶主動語態，絕對沒有被動式」？',
+        options: [
+          'consist of (由…組成)',
+          'be composed of',
+          'be made up of',
+          'be divided into'
+        ],
+        answer: 0,
+        explain: '【名師破題】consist of 永遠沒有被動式！不能寫 is consisted of。若要用被動語態請用 is composed of 或 is made up of。'
+      },
+      {
+        id: 'q3-5',
+        title: '中級作文邏輯轉折詞',
+        question: '在兩段式寫作中，想要表達「然而、儘管如此」以銜接轉折論點，下列何者比 but 更具正式度與學術說服力？',
+        options: ['Nevertheless', 'And', 'Because', 'So'],
+        answer: 0,
+        explain: '【名師破題】Nevertheless / However / Nonethless 均為中級英檢寫作專用高級轉折副詞，能顯著拉開與初級作文 but 的差距。'
+      },
+      {
+        id: 'q3-6',
+        title: '損害介系詞搭配',
+        question: 'The massive flood caused severe damage ______ the agricultural farmland in the valley.',
+        options: ['for', 'to', 'on', 'with'],
+        answer: 1,
+        explain: '【名師破題】cause / do damage 的受詞方向介系詞固定搭配「to」，且 damage 作為損害時為不可數名詞，不可加 a！'
+      }
+    ],
+    videos: [
+      {
+        title: '3-1 中級中譯英突破：200 黃金搭配詞與分詞構句逆襲',
+        duration: '09:12',
+        desc: 'JENNY 總指揮官直擊官方聽診室 76 個高頻盲點單字，示範如何將中文字眼昇華為地道母語英文句型。',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'
+      },
+      {
+        title: '3-2 中級 120 字引導寫作：兩段式黃金骨架與高分轉折詞',
+        duration: '10:35',
+        desc: '解構 120 字作文段落分配、主題句設計與個人實例鋪陳，教你用倒裝句與分詞修飾拿下滿分。',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4'
+      }
+    ]
+  },
+
+  unit4: {
+    code: 'JENNY-S',
+    badge: 'JENNY 中級口說',
+    title: '中級口說論壇：全真朗讀問答 ＆ 90秒看圖敘述',
+    themeColor: 0xf59e0b,
+    themeHex: '#f59e0b',
+    islandPos: { x: 32, y: 0, z: 28 },
+    cameraPos: { x: 32, y: 15, z: 58 },
+    mentor: {
+      name: '航平 船長 (Kapp'n) ＆ 奧利瑪',
+      badge: '中級口說主考官',
+      speech: '嘿吼！我是開小木船的航平船長！唱著歌帶你們前往中級口說航道！第二部分回答問題要用 PREP 結構開門見山；第三部分 90 秒看圖敘述如同在海浪中掌舵，0-15s 全景、15-50s 核心、50-75s 細節、75-90s 推論，時態一致絕不翻船！'
+    },
+    creature: {
+      name: '水上水上飛機 (Dodo Airlines Seaplane)',
+      badge: '渡渡航空離島航線'
+      desc: '黃白相間的渡渡水上飛機在海面上滑行，象徵 90 秒看圖敘述平穩起飛降落，時態河流一致無瑕！'
+    },
+    pikmin: {
+      name: '空中漂浮紅氣球禮物 (Floating Balloon Present)',
+      badge: '夜光引路小隊',
+      desc: '發出青綠螢光的發光皮克敏浮空盤旋，指引考生在 90 秒看圖敘述中步步清晰、論證嚴密！'
+    },
+    landmark: {
+      name: '羅馬圓形演說論壇 ＆ 90秒雙色計時沙漏',
+      desc: '莊嚴的大理石演說台與巨型計時沙漏，清晰標註 0-15s 全景、15-50s 核心、50-75s 細節、75-90s 推論總結。'
+    },
+    notes: `
+      <div class="space-y-4">
+        <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs">
+          <div class="font-black text-amber-400 text-sm mb-1">【第三部分：看圖敘述 90 秒】實戰配速沙漏</div>
+          <p class="text-slate-200 leading-relaxed mb-2">準備 30 秒，作答 90 秒。掌握 4 大時間區間與鏡頭語言：</p>
+          <div class="space-y-1.5 text-[11px]">
+            <div class="p-2 rounded-lg bg-slate-900/80 border border-amber-500/30">
+              <span class="text-amber-300 font-bold">1. 0 ~ 15 秒（全景設定 Overall Setting）</span>
+              <p class="text-slate-300">交代時間、地點、天氣與總體氛圍。"In this vivid picture, we can see a crowded subway station during morning rush hour."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-900/80 border border-amber-500/30">
+              <span class="text-pink-300 font-bold">2. 15 ~ 50 秒（核心主角動作與事件 Foreground Actions）</span>
+              <p class="text-slate-300">聚焦主要人物正在做什麼。"In the center, a businessman in a dark suit is checking his watch anxiously while waiting for the train."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-900/80 border border-amber-500/30">
+              <span class="text-sky-300 font-bold">3. 50 ~ 75 秒（次要人物與背景細節 Background & Details）</span>
+              <p class="text-slate-300">描繪背景人物與環境特徵。"On the bench to the right, a young student is listening to music through headphones, appearing relaxed."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-900/80 border border-amber-500/30">
+              <span class="text-emerald-300 font-bold">4. 75 ~ 90 秒（推論心理與結尾展望 Inference & Summary）</span>
+              <p class="text-slate-300">合理推測心情與後續情節。"Judging from the scene, everyone seems eager to begin their daily routine on this bustling Monday."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-white/10 text-xs">
+          <div class="font-black text-sky-400 text-sm mb-1">【第二部分：回答問題】PREP 深度論述法</div>
+          <p class="text-slate-300 leading-relaxed mb-2">每題準備 5 秒，回答 15~30 秒。針對抽象問題進行邏輯論證：</p>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="p-2 rounded-lg bg-slate-800/80 border border-sky-500/20">
+              <span class="text-sky-300 font-bold">P - Point</span>
+              <p class="text-slate-400 mt-0.5">直接亮出觀點立場："I believe that reading daily is essential."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-800/80 border border-pink-500/20">
+              <span class="text-pink-300 font-bold">R - Reason</span>
+              <p class="text-slate-400 mt-0.5">深入闡述主因："Because it broadens our horizons and reduces stress."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-800/80 border border-amber-500/20">
+              <span class="text-amber-300 font-bold">E - Example</span>
+              <p class="text-slate-400 mt-0.5">列舉生活佐證："For instance, reading before bed helps me fall asleep faster."</p>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-800/80 border border-emerald-500/20">
+              <span class="text-emerald-300 font-bold">P - Point</span>
+              <p class="text-slate-400 mt-0.5">昇華重申結論："Therefore, cultivating a reading habit benefits our minds."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 點擊放大圖解按鈕 -->
+        <div class="p-3 rounded-2xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-white text-xs">視覺圖解卡：90秒看圖沙漏 ＆ PREP 雷達圖</div>
+            <div class="text-[10px] text-amber-300">支援滾輪無段放大至 350%</div>
+          </div>
+          <button onclick="openLightbox(3)" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-xs transition flex items-center gap-1 shadow">
+            <i class="fa-solid fa-expand"></i> 檢視大圖
+          </button>
+        </div>
+      </div>
+    `,
+    quizzes: [
+      {
+        id: 'q4-1',
+        title: '看圖敘述時態一致性',
+        question: '在中級英檢看圖敘述中，若以「現在進行式 (is/are + V-ing)」描繪畫面中正在發生的動作，整篇論述應維持何種時態？',
+        options: [
+          '前幾句用現在進行式，中間隨意跳到過去式，結尾用未來式',
+          '通篇維持現在進行式與現在簡單式的一致性',
+          '全部改成過去完成式',
+          '每一句更換不同時態以展現文法廣度'
+        ],
+        answer: 1,
+        explain: '【名師破題】中級看圖敘述最忌諱「時態跳躍漂移」！若設定為正在進行的場景，必須嚴格維持現在進行式（正在做…）與現在簡單式（看起來…），隨意換時態會被扣流利度分數。'
+      },
+      {
+        id: 'q4-2',
+        title: '口說 PREP 邏輯框架',
+        question: '考官提問："Do you think online shopping will completely replace traditional stores in the future?" 採用 PREP 法回答時，第一步應做什麼？',
+        options: [
+          '講述昨天在網路上買衣服的詳細經驗',
+          '保持沉默 10 秒思考文法',
+          '直接表明核心立場 (Point)：明確說明同意或反對',
+          '抱怨網路購物運費太貴'
+        ],
+        answer: 2,
+        explain: '【名師破題】PREP 的 P 代表 Point，必須在開頭 3 秒內直接給出明確答案（"In my opinion, online shopping will not completely replace brick-and-mortar stores."），再接 Reason 與 Example。'
+      },
+      {
+        id: 'q4-3',
+        title: '語音同化技巧 (Assimilation)',
+        question: '片語 "Could you help me?" 中，[d] 遇到 [j] 產生同化音變，母語者自然發音最接近：',
+        options: [
+          '[kʊd-ju]',
+          '[kʊ-dʒu] (音變為 /dʒ/)',
+          '[kʊ-tʃu]',
+          '[kʊd-hu]'
+        ],
+        answer: 1,
+        explain: '【名師破題】語音同化 (Assimilation)：字尾 [d] 與字首 [j] 相遇時同化為濁輔音 [dʒ]，如 "Could you" 唸作 [kʊ-dʒu]，"did you" 唸作 [dɪ-dʒu]，是中級口說獲評高分自然度的關鍵！'
+      },
+      {
+        id: 'q4-4',
+        title: '看圖敘述時間分配策略',
+        question: '在 90 秒的看圖敘述中，若前 60 秒都只描繪單一角落的某件小事，最可能面臨的風險是：',
+        options: [
+          '獲得滿分，因為細節非常深入',
+          '時間用盡而未交代全景背景、其他人物與整體結論，被判定架構不全',
+          '考官會提早打斷並給予讚賞',
+          '沒有任何影響'
+        ],
+        answer: 1,
+        explain: '【名師破題】看圖敘述必須依照「0-15s 全景 ➔ 15-50s 核心 ➔ 50-75s 背景細節 ➔ 75-90s 總結推論」節奏推進，過度停留於單一點會導致整體故事未完工扣分。'
+      },
+      {
+        id: 'q4-5',
+        title: '中級朗讀語氣感染力',
+        question: '朗讀短文遇到驚嘆句或懸疑情節（例如: "To everyone\'s amazement, the mystery box was empty!"）時，應如何表現？',
+        options: [
+          '加快語速像念繞口令',
+          '調降聲音到聽不見',
+          '適度放慢節奏，在 amazement 後稍作戲劇性停頓，重讀 empty 以傳達驚訝情緒',
+          '一律保持毫無起伏的機器人平調'
+        ],
+        answer: 2,
+        explain: '【名師破題】中級朗讀短文評分重點之一為「情緒與意義傳達」。遇到驚訝或轉折詞彙，適當放慢與重讀能向考官展現高階英語表達力。'
+      },
+      {
+        id: 'q4-6',
+        title: '推論句型 (Inference) 應用',
+        question: '在看圖敘述結尾進行推論時，下列哪一個句型最地道優雅？',
+        options: [
+          '"I think maybe something happen."',
+          '"Judging from the joyous expressions on their faces, they must have celebrated a triumphant victory."',
+          '"The picture is finish now."',
+          '"They look like happy."'
+        ],
+        answer: 1,
+        explain: '【名師破題】"Judging from... they must have + p.p." 是高階推論句型，完美結合分詞片語與情態助動詞推測，能為 90 秒看圖敘述畫下精彩句點！'
+      }
+    ],
+    videos: [
+      {
+        title: '4-1 中級短文朗讀與深入回答：PREP 答題法與流利度評分標準',
+        duration: '08:40',
+        desc: '老船長奧利瑪親自演示中級口說全真測驗，拆解連音同化技巧與 30 秒深入問題論述心法。',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4'
+      },
+      {
+        title: '4-2 中級看圖敘述 90 秒實戰：時態一致性與 3W1H 細節鋪陳',
+        duration: '11:05',
+        desc: '以大理石演講台 90 秒雙色計時沙漏為例，全景到特寫四段式配速，杜絕卡頓與時態混亂。',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
+      }
+    ]
+  }
+};
+
+// 6 張全幅圖解畫廊元數據 (Pan & Zoom Lightbox)
+const LIGHTBOX_GALLERY = [
+  {
+    title: '【初級寫作】花費四大金剛 SPEND/TAKE/COST/PAY 秒殺圖',
+    badge: 'STELLA WRITING',
+    src: 'images/info_1_elementary_writing.svg',
+    desc: '主詞身分＋所花對象＋後接結構三秒定位，搭配 50 字看圖故事起承轉合公式。'
+  },
+  {
+    title: '【初級口說】覆述・朗讀短文・回答問題 全方位破題心法',
+    badge: 'STELLA SPEAKING',
+    src: 'images/info_2_elementary_speaking.svg',
+    desc: '意群停頓 (Sense Groups) 斷句訣竅、升降調規律與 3+2 回答問題黃金模板。'
+  },
+  {
+    title: '【中級寫作】中譯英句構逆襲 ＆ 120 字兩段式引導作文',
+    badge: 'JENNY WRITING',
+    src: 'images/info_3_intermediate_writing.svg',
+    desc: '官方聽診室 76 弱點單字精準命中，分詞構句、關代與 120 字兩段式黃金骨架。'
+  },
+  {
+    title: '【中級口說】90 秒看圖敘述配速沙漏 ＆ PREP 深度論述雷達',
+    badge: 'JENNY SPEAKING',
+    src: 'images/info_4_intermediate_speaking.svg',
+    desc: '30 秒審題 90 秒作答四段配速，PREP 邏輯框架與連音同化母語發音技巧。'
+  },
+  {
+    title: '【出題委員解密】中式英文 (Chinglish ❌) vs 母語黃金搭配 (Native ✅)',
+    badge: 'COLLOCATION MATRIX',
+    src: 'images/info_5_chinglish_vs_native.svg',
+    desc: '近 20 年出題委員閱卷扣分重災區：conduct a survey, draw a conclusion, play a role 等。'
+  },
+  {
+    title: '【中級克漏字與寫作】介系詞「TO ＋ V-ING」八大天王雷達圖',
+    badge: 'GERUND MASTERY',
+    src: 'images/info_6_to_ving_gerund_radar.svg',
+    desc: 'look forward to / be accustomed to 等片語中 to 為介系詞，100% 後接動名詞。'
+  }
+];
+</script>
+
+<script>
+// =============================================================================
+// UI 狀態管理、學習抽屜、題庫評量與實驗室
+// =============================================================================
+let currentUnitCode = 'unit1';
+let currentTab = 'notes';
+let soundFXEnabled = true;
+let userQuizAnswers = {};
+let userQuizScores = { unit1: 0, unit2: 0, unit3: 0, unit4: 0 };
+let currentSpeakingEntity = null;
+
+// 初始化燈箱縮圖
+function initLightboxThumbs() {
+  const container = document.getElementById('lightbox-thumbs');
+  if (!container) return;
+  container.innerHTML = '';
+  LIGHTBOX_GALLERY.forEach((item, idx) => {
+    const btn = document.createElement('button');
+    btn.className = `w-14 h-10 rounded-lg overflow-hidden border-2 transition flex-shrink-0 ${idx === 0 ? 'border-sky-400 scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`;
+    btn.onclick = () => selectLightboxIdx(idx);
+    btn.innerHTML = `<img src="${item.src}" class="w-full h-full object-cover">`;
+    btn.id = `lightbox-thumb-${idx}`;
+    container.appendChild(btn);
+  });
+}
+
+// -----------------------------------------------------------------------------
+// 學習抽屜 Tab 切換與內容渲染
+// -----------------------------------------------------------------------------
+function switchTab(tabId) {
+  currentTab = tabId;
+  const tabBtns = document.querySelectorAll('.drawer-tab-btn');
+  tabBtns.forEach(btn => {
+    btn.classList.remove('text-sky-400', 'bg-slate-800', 'shadow');
+    btn.classList.add('text-slate-400');
+  });
+  const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+  if (activeBtn) {
+    activeBtn.classList.add('text-sky-400', 'bg-slate-800', 'shadow');
+    activeBtn.classList.remove('text-slate-400');
+  }
+  populateDrawer();
+}
+
+function openDrawerIfClosed(tabId = 'notes') {
+  const drawer = document.getElementById('learning-drawer');
+  drawer.classList.remove('translate-x-full');
+  switchTab(tabId);
+}
+
+function openDrawerWithTab(tabId) {
+  openDrawerIfClosed(tabId);
+}
+
+function closeDrawer() {
+  const drawer = document.getElementById('learning-drawer');
+  drawer.classList.add('translate-x-full');
+  pauseAllVideos();
+}
+
+function populateDrawer() {
+  const unit = CHAPTER_DATA[currentUnitCode];
+  document.getElementById('drawer-title').innerText = `${unit.code} ${unit.title}`;
+  document.getElementById('drawer-subtitle').innerText = unit.badge;
+
+  const contentArea = document.getElementById('drawer-content');
+  contentArea.innerHTML = '';
+
+  if (currentTab === 'notes') {
+    contentArea.innerHTML = unit.notes;
+  } else if (currentTab === 'quiz') {
+    renderQuizView(contentArea, unit);
+  } else if (currentTab === 'video') {
+    renderVideoView(contentArea, unit);
+  } else if (currentTab === 'lab') {
+    renderLabView(contentArea, unit);
+  } else if (currentTab === 'stella') {
+    renderStellaView(contentArea, unit);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Tab 2: 英檢評量闖關題庫 (24 題即時紅綠診斷與星星進度條)
+// -----------------------------------------------------------------------------
+function renderQuizView(container, unit) {
+  const score = userQuizScores[currentUnitCode] || 0;
+  const total = unit.quizzes.length;
+  const percent = Math.round((score / total) * 100);
+
+  let html = `
+    <div class="space-y-4">
+      <!-- 分數統計卡 -->
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-sky-500/15 via-indigo-500/15 to-purple-500/15 border border-sky-500/30">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-trophy text-amber-400 text-base"></i>
+            <span class="text-xs font-black text-white">${unit.badge} 實戰闖關</span>
+          </div>
+          <span class="text-xs font-mono font-bold text-sky-300">${score} / ${total} 星星 (${percent}%)</span>
+        </div>
+        <div class="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden border border-white/5">
+          <div class="h-full bg-gradient-to-r from-sky-400 to-indigo-500 transition-all duration-500 rounded-full" style="width: ${percent}%"></div>
+        </div>
+      </div>
+
+      <!-- 題目列表 -->
+      <div class="space-y-3.5">
+  `;
+
+  unit.quizzes.forEach((q, qIdx) => {
+    const answered = userQuizAnswers[q.id];
+    const isAnswered = answered !== undefined;
+    const isCorrect = isAnswered && answered === q.answer;
+
+    html += `
+      <div class="p-3.5 rounded-2xl glass-card border ${isAnswered ? (isCorrect ? 'border-emerald-500/40 bg-emerald-950/20' : 'border-rose-500/40 bg-rose-950/20') : 'border-white/5'}">
+        <div class="flex items-start justify-between gap-2 mb-2">
+          <div class="flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-md bg-slate-800 text-sky-400 text-[10px] font-black flex items-center justify-center border border-sky-500/30 font-mono">
+              ${qIdx + 1}
+            </span>
+            <span class="text-xs font-bold text-white">${q.title}</span>
+          </div>
+          ${isAnswered ? (isCorrect ? '<span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full"><i class="fa-solid fa-check"></i> 正確</span>' : '<span class="text-[10px] font-bold text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded-full"><i class="fa-solid fa-xmark"></i> 錯誤</span>') : ''}
+        </div>
+        <p class="text-xs text-slate-200 leading-relaxed mb-3">${q.question}</p>
+
+        <!-- 選項 -->
+        <div class="space-y-1.5">
+    `;
+
+    q.options.forEach((opt, optIdx) => {
+      let optClass = 'bg-slate-900/60 hover:bg-slate-800/80 border-white/5 text-slate-300';
+      if (isAnswered) {
+        if (optIdx === q.answer) {
+          optClass = 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 font-bold';
+        } else if (optIdx === answered) {
+          optClass = 'bg-rose-500/20 border-rose-500/50 text-rose-300 font-bold line-through';
+        } else {
+          optClass = 'bg-slate-900/40 border-white/5 text-slate-500 opacity-60';
+        }
+      }
+
+      html += `
+        <button onclick="handleAnswer('${q.id}', ${optIdx})" ${isAnswered ? 'disabled' : ''} class="w-full text-left p-2.5 rounded-xl border text-xs transition flex items-center justify-between ${optClass}">
+          <span><b class="text-sky-400 mr-1.5 font-mono">${String.fromCharCode(65 + optIdx)}.</b> ${opt}</span>
+          ${isAnswered && optIdx === q.answer ? '<i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>' : ''}
+        </button>
+      `;
+    });
+
+    html += `</div>`;
+
+    // 解題剖析
+    if (isAnswered) {
+      html += `
+        <div class="mt-3 p-3 rounded-xl bg-slate-950/70 border border-white/5 text-[11px] text-slate-300 space-y-1">
+          <div class="font-bold text-amber-300 flex items-center gap-1">
+            <i class="fa-solid fa-lightbulb"></i> 名師破題剖析
+          </div>
+          <p class="leading-relaxed text-slate-300">${q.explain}</p>
+        </div>
+      `;
+    }
+
+    html += `</div>`;
+  });
+
+  html += `
+      </div>
+      <div class="pt-2 flex justify-center">
+        <button onclick="resetQuizzes()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrows-rotate"></i> 重新測驗本單元
+        </button>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+function handleAnswer(qId, choiceIdx) {
+  userQuizAnswers[qId] = choiceIdx;
+  const unit = CHAPTER_DATA[currentUnitCode];
+  const q = unit.quizzes.find(item => item.id === qId);
+  if (q && choiceIdx === q.answer) {
+    userQuizScores[currentUnitCode] = (userQuizScores[currentUnitCode] || 0) + 1;
+    // 施放 Confetti 彩帶慶祝
+    if (typeof confetti === 'function') {
+      confetti({
+        particleCount: 40,
+        spread: 60,
+        origin: { y: 0.8 }
+      });
+    }
+  }
+  populateDrawer();
+}
+
+function resetQuizzes() {
+  const unit = CHAPTER_DATA[currentUnitCode];
+  unit.quizzes.forEach(q => {
+    delete userQuizAnswers[q.id];
+  });
+  userQuizScores[currentUnitCode] = 0;
+  populateDrawer();
+}
+
+// -----------------------------------------------------------------------------
+// Tab 3: 雙教學影片播放專區 (每小節 2 部，共 8 部)
+// -----------------------------------------------------------------------------
+function renderVideoView(container, unit) {
+  let html = `
+    <div class="space-y-4">
+      <div class="p-3 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-xs text-slate-300">
+        <div class="font-bold text-sky-400 mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-clapperboard"></i> 官方雙教學影片專區（本節共 2 部）
+        </div>
+        本專區收錄英檢名師全真教學示範，支援時間軸跳轉與全螢幕直開。
+      </div>
+  `;
+
+  unit.videos.forEach((v, idx) => {
+    html += `
+      <div class="p-3.5 rounded-2xl glass-card border border-white/5 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-white flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-md bg-indigo-500 text-white text-[10px] flex items-center justify-center font-mono">${idx + 1}</span>
+            ${v.title}
+          </span>
+          <span class="text-[10px] font-mono font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded-md">${v.duration}</span>
+        </div>
+        <p class="text-[11px] text-slate-300 leading-relaxed">${v.desc}</p>
+        
+        <!-- 模擬影片播放器 -->
+        <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-950 border border-white/10 group">
+          <video id="video-player-${currentUnitCode}-${idx}" class="w-full h-full object-cover" controls preload="metadata" src="${v.url}"></video>
+        </div>
+
+        <div class="flex items-center justify-between pt-1 text-[11px]">
+          <span class="text-slate-400"><i class="fa-solid fa-chalkboard-user mr-1 text-sky-400"></i> ${unit.mentor.name} 授課</span>
+          <button onclick="playUnitVideo('${currentUnitCode}', ${idx})" class="text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
+            <i class="fa-solid fa-play text-[10px]"></i> 播放此影片
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function playUnitVideo(unitCode, idx) {
+  pauseAllVideos();
+  const v = document.getElementById(`video-player-${unitCode}-${idx}`);
+  if (v) {
+    v.play();
+  }
+}
+
+function pauseAllVideos() {
+  const videos = document.querySelectorAll('video');
+  videos.forEach(v => v.pause());
+}
+
+// -----------------------------------------------------------------------------
+// Tab 4: 互動實驗室 (Lab Simulators)
+// -----------------------------------------------------------------------------
+let lab1State = { selectedWord: null, selectedVerb: null, status: 'ready', msg: '' };
+let lab3State = { topic: 0, p1Points: [0, 1], p2Points: [0, 1] };
+let lab4Timer = null;
+let lab4Seconds = 0;
+let lab4Phase = 'prep'; // prep (30s) or speech (90s)
+
+function renderLabView(container, unit) {
+  if (currentUnitCode === 'unit1') {
+    renderLab1(container);
+  } else if (currentUnitCode === 'unit2') {
+    renderLab2(container);
+  } else if (currentUnitCode === 'unit3') {
+    renderLab3(container);
+  } else if (currentUnitCode === 'unit4') {
+    renderLab4(container);
+  }
+}
+
+// Lab 1: 搭配詞秒殺試管實驗室 (Collocation Chem Lab)
+function renderLab1(container) {
+  container.innerHTML = `
+    <div class="space-y-4">
+      <div class="p-3.5 rounded-2xl bg-pink-500/10 border border-pink-500/20 text-xs">
+        <div class="font-black text-pink-400 text-sm mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-flask-vial"></i> STELLA 搭配詞秒殺試管實驗室
+        </div>
+        <p class="text-slate-200 leading-relaxed">
+          點選右側待測受詞，再點選左側動詞試劑注入反應皿。若合成道地母語英文，試管發出藍金螢光！若混入中式英文 (Chinglish)，試管將劇烈冒黑煙並觸發恰比大嘴怪警報！
+        </p>
+      </div>
+
+      <!-- 實驗操作台 -->
+      <div class="p-4 rounded-2xl glass-card border border-white/10 space-y-4">
+        <!-- 試管與化學反應皿 -->
+        <div class="relative h-44 rounded-2xl bg-slate-950 flex flex-col items-center justify-center p-3 border border-white/10 overflow-hidden" id="lab1-beaker">
+          <div class="absolute top-2 left-3 text-[10px] font-mono text-slate-500">REACTION CHAMBER v2.0</div>
+          <div id="lab1-fluid" class="w-20 h-28 rounded-b-2xl border-2 border-slate-700 bg-slate-900/80 flex flex-col items-center justify-end p-2 transition-all duration-500">
+            <div id="lab1-fluid-inner" class="w-full h-8 rounded-b-xl bg-sky-500/40 transition-all duration-500"></div>
+          </div>
+          <div id="lab1-result" class="text-xs font-bold text-slate-300 mt-2 text-center h-6 flex items-center justify-center">
+            請選擇動詞試劑與目標名詞
+          </div>
+        </div>
+
+        <!-- 試劑選擇區 -->
+        <div class="space-y-2">
+          <span class="text-[11px] font-bold text-sky-400">第一步：選擇動詞試劑（左邊動詞）</span>
+          <div class="grid grid-cols-3 gap-1.5" id="lab1-verbs">
+            ${['take', 'spend', 'cost', 'pay', 'keep', 'eat'].map(v => `
+              <button onclick="selectLab1Verb('${v}')" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border ${lab1State.selectedVerb === v ? 'border-sky-400 text-sky-300 bg-sky-950/40' : 'border-white/5 text-slate-300'} text-xs font-bold font-mono transition">
+                + ${v}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <span class="text-[11px] font-bold text-pink-400">第二步：選擇受詞受質（右邊名詞）</span>
+          <div class="grid grid-cols-2 gap-1.5" id="lab1-words">
+            ${[
+              { id: 'med', text: 'medicine (藥)', correct: 'take' },
+              { id: 'diary', text: 'a diary (日記)', correct: 'keep' },
+              { id: 'time', text: '2 hours to finish', correct: 'take' },
+              { id: 'money', text: '$500 on the bag', correct: 'spend' },
+              { id: 'payfor', text: '$100 for lunch', correct: 'pay' },
+              { id: 'costme', text: 'me $2,000 (The bike...)', correct: 'cost' }
+            ].map(w => `
+              <button onclick="selectLab1Word('${w.id}', '${w.correct}', '${w.text}')" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border ${lab1State.selectedWord === w.id ? 'border-pink-400 text-pink-300 bg-pink-950/40' : 'border-white/5 text-slate-300'} text-xs font-bold transition text-left">
+                • ${w.text}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- 觸發反應按鈕 -->
+        <div class="pt-2 flex justify-center">
+          <button onclick="executeLab1Reaction()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 hover:from-pink-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-pink-500/25 transition flex items-center gap-2">
+            <i class="fa-solid fa-atom"></i> 注入試劑進行化學反應
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function selectLab1Verb(v) {
+  lab1State.selectedVerb = v;
+  renderLabView(document.getElementById('drawer-content'));
+}
+
+function selectLab1Word(id, correct, text) {
+  lab1State.selectedWord = id;
+  lab1State.targetCorrect = correct;
+  lab1State.targetText = text;
+  renderLabView(document.getElementById('drawer-content'));
+}
+
+function executeLab1Reaction() {
+  if (!lab1State.selectedVerb || !lab1State.selectedWord) {
+    alert('請先同時選擇動詞試劑與目標名詞！');
+    return;
+  }
+  const resultDiv = document.getElementById('lab1-result');
+  const innerFluid = document.getElementById('lab1-fluid-inner');
+  const beaker = document.getElementById('lab1-beaker');
+
+  if (lab1State.selectedVerb === lab1State.targetCorrect) {
+    // 成功
+    innerFluid.className = 'w-full h-24 rounded-b-xl bg-emerald-400 shadow-[0_0_20px_#34d399] transition-all duration-500';
+    resultDiv.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> 完美合成：${lab1State.selectedVerb} + ${lab1State.targetText}！恰比怪獸滿足地沉睡！</span>`;
+    if (typeof confetti === 'function') confetti({ particleCount: 35, spread: 50 });
+  } else {
+    // 錯誤 Chinglish
+    innerFluid.className = 'w-full h-24 rounded-b-xl bg-rose-600 shadow-[0_0_20px_#f43f5e] animate-pulse transition-all duration-500';
+    resultDiv.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> 警報！${lab1State.selectedVerb} 是 Chinglish！恰比大嘴怪張開大口咬碎試管！</span>`;
+  }
+}
+
+// Lab 2: 初級口說語調音波雷達 (Echo & Pitch Waveform Simulator)
+function renderLab2(container) {
+  container.innerHTML = `
+    <div class="space-y-4">
+      <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs">
+        <div class="font-black text-emerald-400 text-sm mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-wave-square"></i> STELLA 口說音波與語調雷達
+        </div>
+        <p class="text-slate-200 leading-relaxed">
+          選擇標準考題句子，點選「名師示範朗讀」觀測升降調與重音節點；點選「跟讀錄音測試」模擬即時發音辨識與評分！
+        </p>
+      </div>
+
+      <div class="p-4 rounded-2xl glass-card border border-white/10 space-y-4">
+        <!-- 音波畫布 -->
+        <div class="relative h-36 rounded-2xl bg-slate-950 flex flex-col items-center justify-center p-3 border border-white/10 overflow-hidden">
+          <canvas id="waveform-canvas" width="480" height="110" class="w-full h-full"></canvas>
+        </div>
+
+        <!-- 句子選擇 -->
+        <div class="space-y-1.5">
+          <span class="text-[11px] font-bold text-sky-400">選擇示範句子：</span>
+          <div class="space-y-1" id="lab2-sentences">
+            ${[
+              { text: "My sister drinks a glass of warm milk before going to bed.", label: "意群斷句 (Chunking)" },
+              { text: "Could you please pass me the salt on the table?", label: "Yes/No 請求升調 ↗" },
+              { text: "Where did you buy this beautiful jacket?", label: "WH 疑問句降調 ↘" },
+              { text: "Yesterday, they walked five kilometers along the river.", label: "字尾 -ed 尾音精準" }
+            ].map((s, idx) => `
+              <button onclick="playLab2Sentence('${s.text}')" class="w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/5 text-xs text-slate-300 transition flex items-center justify-between">
+                <span class="truncate"><b>${idx + 1}.</b> "${s.text}"</span>
+                <span class="text-[10px] text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-md flex-shrink-0 ml-2">${s.label}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- 測試按鈕 -->
+        <div class="pt-2 flex items-center justify-center gap-3">
+          <button onclick="simulateVoiceRecord()" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/25 transition flex items-center gap-2">
+            <i class="fa-solid fa-microphone"></i> 模擬口說錄音複誦
+          </button>
+        </div>
+
+        <div id="lab2-feedback" class="text-xs text-center text-slate-400 min-h-6">
+          點選句子即可聆聽台北年輕女聲標準示範
+        </div>
+      </div>
+    </div>
+  `;
+  setTimeout(drawStaticWaveform, 100);
+}
+
+function drawStaticWaveform() {
+  const canvas = document.getElementById('waveform-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = '#22d3ee';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  const w = canvas.width;
+  const h = canvas.height;
+  for (let x = 0; x < w; x++) {
+    const y = h / 2 + Math.sin(x * 0.05) * 20 * Math.sin(x * 0.015);
+    if (x === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+}
+
+function playLab2Sentence(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }
+  const fb = document.getElementById('lab2-feedback');
+  if (fb) fb.innerHTML = `<span class="text-sky-300 font-bold">正在朗讀：</span> "${text}"`;
+}
+
+function simulateVoiceRecord() {
+  const fb = document.getElementById('lab2-feedback');
+  if (fb) {
+    fb.innerHTML = `<span class="text-amber-400 font-bold"><i class="fa-solid fa-circle-notch fa-spin"></i> 正在評估音頻共振與語調起伏...</span>`;
+    setTimeout(() => {
+      fb.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> 評分完成：流利度 98% (A+) ｜ 意群停頓精準 ｜ 尾音無遺漏！</span>`;
+      if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 45 });
+    }, 1500);
+  }
+}
+
+// Lab 3: 中級 120 字引導作文黃金積木台 (120-Word Essay Builder)
+function renderLab3(container) {
+  container.innerHTML = `
+    <div class="space-y-4">
+      <div class="p-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-xs">
+        <div class="font-black text-indigo-400 text-sm mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-cubes-stacked"></i> JENNY 120 字引導作文積木拼裝台
+        </div>
+        <p class="text-slate-200 leading-relaxed">
+          透過模組化鷹架，拖曳或點選兩段式黃金積木（主題破題 ➔ 核心觀點 ➔ 轉折連貫 ➔ 親身例證 ➔ 倒裝收尾），實時檢測字數與母語搭配詞密度！
+        </p>
+      </div>
+
+      <div class="p-4 rounded-2xl glass-card border border-white/10 space-y-3.5">
+        <!-- 實時狀態指標 -->
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="p-2 rounded-xl bg-slate-900 border border-white/5">
+            <div class="text-[10px] text-slate-400">即時字數</div>
+            <div class="text-sm font-black text-sky-400 font-mono">118 字</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900 border border-white/5">
+            <div class="text-[10px] text-slate-400">搭配詞密度</div>
+            <div class="text-sm font-black text-emerald-400 font-mono">18.5%</div>
+          </div>
+          <div class="p-2 rounded-xl bg-slate-900 border border-white/5">
+            <div class="text-[10px] text-slate-400">Chinglish 扣分</div>
+            <div class="text-sm font-black text-indigo-400 font-mono">0 次 (零失誤)</div>
+          </div>
+        </div>
+
+        <!-- 拼接好的文章視圖 -->
+        <div class="p-3.5 rounded-xl bg-slate-950 border border-indigo-500/30 text-[11px] leading-relaxed text-slate-200 space-y-2 font-serif">
+          <p><b class="text-indigo-400 font-sans">[第一段：現象與觀點]</b> In contemporary society, environmental protection has aroused widespread public concern. From my perspective, reducing plastic waste plays a vital role in preserving our fragile planet. There are several compelling reasons behind my viewpoint.</p>
+          <p><b class="text-pink-400 font-sans">[第二段：經驗與展望]</b> Taking my personal experience as an illustration, last month my family started bringing reusable bags and bottles. Although it was slightly inconvenient initially, we gradually adapted to it. In conclusion, only by taking proactive measures can we build a sustainable future.</p>
+        </div>
+
+        <!-- 模組化置換按鈕 -->
+        <div class="space-y-1.5">
+          <span class="text-[11px] font-bold text-slate-300">置換高級句型積木：</span>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button onclick="alert('已套用分詞構句積木！')" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/5 text-slate-300 text-left">
+              🔄 插入分詞構句
+            </button>
+            <button onclick="alert('已套用倒裝句型積木！')" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/5 text-slate-300 text-left">
+              🔄 插入 Only by 倒裝句
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-1 flex justify-center">
+          <button onclick="alert('範文已複製至剪貼簿！')" class="px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-xs transition shadow-lg shadow-indigo-500/30 flex items-center gap-1.5">
+            <i class="fa-solid fa-copy"></i> 匯出滿分範文與評分報告
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Lab 4: 中級口說看圖敘述 90 秒計時沙漏 (Speaking Sandbox & Timer)
+function renderLab4(container) {
+  container.innerHTML = `
+    <div class="space-y-4">
+      <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs">
+        <div class="font-black text-amber-400 text-sm mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-stopwatch-20"></i> JENNY 90 秒看圖敘述雙色計時沙漏
+        </div>
+        <p class="text-slate-200 leading-relaxed">
+          全民英檢中級複試看圖敘述全真模擬器！嚴格配備「30 秒審題準備 ➔ 90 秒正式作答」，四階段配速提示，杜絕時態混亂與超時卡頓。
+        </p>
+      </div>
+
+      <div class="p-4 rounded-2xl glass-card border border-white/10 space-y-4">
+        <!-- 計時器主面板 -->
+        <div class="relative h-44 rounded-2xl bg-slate-950 flex flex-col items-center justify-center p-3 border border-white/10 overflow-hidden">
+          <div class="text-[10px] font-mono tracking-widest uppercase mb-1" id="lab4-phase-text">
+            ${lab4Phase === 'prep' ? '<span class="text-sky-400">STAGE 1: 審題準備中 (30s)</span>' : '<span class="text-rose-400">STAGE 2: 正式錄音作答 (90s)</span>'}
+          </div>
+          <div class="text-4xl font-black font-mono text-white tracking-wider my-1" id="lab4-timer-display">
+            ${String(Math.floor(lab4Seconds / 60)).padStart(2, '0')}:${String(lab4Seconds % 60).padStart(2, '0')}
+          </div>
+          <div class="text-xs text-amber-300 font-bold mt-1 text-center" id="lab4-stage-hint">
+            當前配速焦點：0 ~ 15s 全景概述 (Setting & Background)
+          </div>
+        </div>
+
+        <!-- 計時控制按鈕 -->
+        <div class="flex items-center justify-center gap-3">
+          <button onclick="startLab4Timer()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-amber-500/25">
+            <i class="fa-solid fa-play"></i> 開始 30s 審題
+          </button>
+          <button onclick="startLab4Speech()" class="px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-bold text-xs transition flex items-center gap-2 shadow-lg shadow-rose-500/25">
+            <i class="fa-solid fa-microphone"></i> 直接進入 90s 作答
+          </button>
+          <button onclick="resetLab4Timer()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">
+            <i class="fa-solid fa-arrows-rotate"></i> 重設
+          </button>
+        </div>
+
+        <!-- 4 階段提示條 -->
+        <div class="grid grid-cols-4 gap-1.5 text-center text-[10px]">
+          <div class="p-1.5 rounded-lg bg-slate-900 border border-sky-500/30 text-sky-300">0-15s 全景</div>
+          <div class="p-1.5 rounded-lg bg-slate-900 border border-pink-500/30 text-pink-300">15-50s 核心</div>
+          <div class="p-1.5 rounded-lg bg-slate-900 border border-amber-500/30 text-amber-300">50-75s 細節</div>
+          <div class="p-1.5 rounded-lg bg-slate-900 border border-emerald-500/30 text-emerald-300">75-90s 推論</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function startLab4Timer() {
+  clearInterval(lab4Timer);
+  lab4Phase = 'prep';
+  lab4Seconds = 30;
+  updateLab4Display();
+  lab4Timer = setInterval(() => {
+    lab4Seconds--;
+    if (lab4Seconds <= 0) {
+      clearInterval(lab4Timer);
+      startLab4Speech();
+    }
+    updateLab4Display();
+  }, 1000);
+}
+
+function startLab4Speech() {
+  clearInterval(lab4Timer);
+  lab4Phase = 'speech';
+  lab4Seconds = 90;
+  updateLab4Display();
+  lab4Timer = setInterval(() => {
+    lab4Seconds--;
+    if (lab4Seconds <= 0) {
+      clearInterval(lab4Timer);
+      alert('90 秒作答時間結束！作答錄音封裝完成！');
+    }
+    updateLab4Display();
+  }, 1000);
+}
+
+function resetLab4Timer() {
+  clearInterval(lab4Timer);
+  lab4Phase = 'prep';
+  lab4Seconds = 0;
+  updateLab4Display();
+}
+
+function updateLab4Display() {
+  const disp = document.getElementById('lab4-timer-display');
+  const phase = document.getElementById('lab4-phase-text');
+  const hint = document.getElementById('lab4-stage-hint');
+  if (disp) {
+    disp.innerText = `${String(Math.floor(lab4Seconds / 60)).padStart(2, '0')}:${String(lab4Seconds % 60).padStart(2, '0')}`;
+  }
+  if (phase) {
+    phase.innerHTML = lab4Phase === 'prep' ? '<span class="text-sky-400">STAGE 1: 審題準備中 (30s)</span>' : '<span class="text-rose-400">STAGE 2: 正式錄音作答 (90s)</span>';
+  }
+  if (hint && lab4Phase === 'speech') {
+    const elapsed = 90 - lab4Seconds;
+    if (elapsed <= 15) hint.innerText = '當前焦點：0 ~ 15s 全景概述 (Setting & Background)';
+    else if (elapsed <= 50) hint.innerText = '當前焦點：15 ~ 50s 核心人物動作與主要情節';
+    else if (elapsed <= 75) hint.innerText = '當前焦點：50 ~ 75s 次要人物與背景環境細節';
+    else hint.innerText = '當前焦點：75 ~ 90s 合理推論心理與結尾展望';
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Tab 5: STELLA 跨學科素養專案
+// -----------------------------------------------------------------------------
+function renderStellaView(container, unit) {
+  container.innerHTML = `
+    <div class="space-y-4">
+      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-sky-500/15 via-indigo-500/15 to-purple-500/15 border border-sky-500/30 text-xs">
+        <div class="font-black text-sky-400 text-sm mb-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-compass-drafting"></i> S.T.E.L.L.A. 跨學科雙語探究任務
+        </div>
+        <p class="text-slate-200 leading-relaxed">
+          整合五大維度自主探究，將英檢說寫能力轉化為真實世界解決問題的國際溝通素養。
+        </p>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="p-3 rounded-xl bg-slate-900/80 border border-sky-500/20">
+          <div class="font-bold text-sky-300 flex items-center gap-1.5 mb-1">
+            <span class="w-4 h-4 rounded bg-sky-500 text-slate-950 font-black text-[10px] flex items-center justify-center">S</span>
+            Science 科學探究：語音聲學與基頻 (F0) 共振
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            探究英語母語者語調升降調中的聲學頻率變化，運用 Praat 語音軟體分析短文朗讀時的意群斷句節奏。
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-900/80 border border-indigo-500/20">
+          <div class="font-bold text-indigo-300 flex items-center gap-1.5 mb-1">
+            <span class="w-4 h-4 rounded bg-indigo-500 text-slate-950 font-black text-[10px] flex items-center justify-center">T</span>
+            Technology 科技工具：AI 語音評測與 ASR
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            了解自動語音辨識（Automatic Speech Recognition）在大型語言模型中的評分權重，實踐「人機協同」備考模式。
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-900/80 border border-emerald-500/20">
+          <div class="font-bold text-emerald-300 flex items-center gap-1.5 mb-1">
+            <span class="w-4 h-4 rounded bg-emerald-500 text-slate-950 font-black text-[10px] flex items-center justify-center">E</span>
+            Engineering 工程邏輯：120 字金字塔段落模組
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            將英文寫作視為嚴密的結構工程，以主題句為梁柱、支撐例證為磚瓦、邏輯轉折詞為鋼筋，搭建穩固文章架構。
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-900/80 border border-amber-500/20">
+          <div class="font-bold text-amber-300 flex items-center gap-1.5 mb-1">
+            <span class="w-4 h-4 rounded bg-amber-500 text-slate-950 font-black text-[10px] flex items-center justify-center">A</span>
+            Arts 視覺美學：看圖寫作之鏡頭語言
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            解析靜態插畫的遠景（Setting）、中景（Action）與特寫（Emotions），培養電影導演般的細膩敘述視角。
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-900/80 border border-pink-500/20">
+          <div class="font-bold text-pink-300 flex items-center gap-1.5 mb-1">
+            <span class="w-4 h-4 rounded bg-pink-500 text-slate-950 font-black text-[10px] flex items-center justify-center">L</span>
+            Language Arts 語言藝術：破除中式思維重塑搭配體系
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            對比英漢語言思維差異，徹底擺脫逐字直譯陋習，熟練掌握 200 組高頻母語成塊搭配詞。
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// -----------------------------------------------------------------------------
+// 圖解 Pan & Zoom 燈箱引擎 (75%～350% 放大、按住拖曳平移、底部切換列)
+// -----------------------------------------------------------------------------
+let currentLightboxIdx = 0;
+let lightboxZoom = 1.0;
+let lightboxPanX = 0;
+let lightboxPanY = 0;
+let isPanning = false;
+let startPanX = 0;
+let startPanY = 0;
+
+function openLightbox(idx = 0) {
+  initLightboxThumbs();
+  selectLightboxIdx(idx);
+  const modal = document.getElementById('lightbox-modal');
+  modal.classList.remove('hidden');
+  initLightboxPanEvents();
+}
+
+function closeLightbox() {
+  const modal = document.getElementById('lightbox-modal');
+  modal.classList.add('hidden');
+}
+
+function selectLightboxIdx(idx) {
+  if (idx < 0) idx = LIGHTBOX_GALLERY.length - 1;
+  if (idx >= LIGHTBOX_GALLERY.length) idx = 0;
+  currentLightboxIdx = idx;
+  const item = LIGHTBOX_GALLERY[idx];
+
+  document.getElementById('lightbox-badge').innerText = `INFOGRAPHIC ${idx + 1}/6 ｜ ${item.badge}`;
+  document.getElementById('lightbox-title').innerText = item.title;
+  const img = document.getElementById('lightbox-img');
+  img.src = item.src;
+
+  resetLightboxZoom();
+
+  // 更新縮圖邊框
+  LIGHTBOX_GALLERY.forEach((_, i) => {
+    const thumb = document.getElementById(`lightbox-thumb-${i}`);
+    if (thumb) {
+      if (i === idx) {
+        thumb.className = 'w-14 h-10 rounded-lg overflow-hidden border-2 border-sky-400 scale-105 transition flex-shrink-0';
+      } else {
+        thumb.className = 'w-14 h-10 rounded-lg overflow-hidden border-2 border-transparent opacity-60 hover:opacity-100 transition flex-shrink-0';
+      }
+    }
+  });
+}
+
+function stepLightbox(delta) {
+  selectLightboxIdx(currentLightboxIdx + delta);
+}
+
+function resetLightboxZoom() {
+  lightboxZoom = 1.0;
+  lightboxPanX = 0;
+  lightboxPanY = 0;
+  applyLightboxTransform();
+}
+
+function zoomLightbox(delta) {
+  lightboxZoom = Math.min(Math.max(lightboxZoom + delta, 0.75), 3.5);
+  applyLightboxTransform();
+}
+
+function applyLightboxTransform() {
+  const img = document.getElementById('lightbox-img');
+  if (img) {
+    img.style.transform = `translate(${lightboxPanX}px, ${lightboxPanY}px) scale(${lightboxZoom})`;
+  }
+}
+
+function initLightboxPanEvents() {
+  const vp = document.getElementById('lightbox-viewport');
+  if (!vp || vp.dataset.initialized) return;
+  vp.dataset.initialized = 'true';
+
+  vp.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.2 : -0.2;
+    zoomLightbox(delta);
+  }, { passive: false });
+
+  vp.addEventListener('mousedown', (e) => {
+    isPanning = true;
+    startPanX = e.clientX - lightboxPanX;
+    startPanY = e.clientY - lightboxPanY;
+    vp.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isPanning) return;
+    lightboxPanX = e.clientX - startPanX;
+    lightboxPanY = e.clientY - startPanY;
+    applyLightboxTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    isPanning = false;
+    if (vp) vp.style.cursor = 'grab';
+  });
+}
+
+// -----------------------------------------------------------------------------
+// 名師口白對話卡與語音朗讀
+// -----------------------------------------------------------------------------
+function showMentorCard(title, badge, speech, entity) {
+  const card = document.getElementById('mentor-dialogue-card');
+  document.getElementById('mentor-name').innerText = title;
+  document.getElementById('mentor-badge').innerText = badge;
+  document.getElementById('mentor-speech').innerText = speech;
+  currentSpeakingEntity = { title, badge, speech };
+
+  card.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+
+  if (soundFXEnabled) {
+    speakCurrentEntity();
+  }
+}
+
+function closeMentorCard() {
+  const card = document.getElementById('mentor-dialogue-card');
+  card.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+function speakCurrentEntity() {
+  if (!currentSpeakingEntity || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(currentSpeakingEntity.speech);
+  u.lang = 'zh-TW';
+  u.rate = 1.05;
+  window.speechSynthesis.speak(u);
+}
+
+function toggleSoundFX() {
+  soundFXEnabled = !soundFXEnabled;
+  const btn = document.getElementById('btn-toggle-sound');
+  if (soundFXEnabled) {
+    btn.innerHTML = '<i class="fa-solid fa-volume-high text-sm"></i>';
+    btn.className = 'w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-emerald-400 hover:border-emerald-500/40 transition shadow-lg';
+  } else {
+    btn.innerHTML = '<i class="fa-solid fa-volume-xmark text-sm"></i>';
+    btn.className = 'w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-slate-500 hover:border-slate-500/40 transition shadow-lg';
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+}
+
+function toggleHelpModal() {
+  const modal = document.getElementById('help-modal');
+  modal.classList.toggle('hidden');
+}
+
+// =============================================================================
+
+// =============================================================================
+// Three.js WebGL 3D 動森海島微縮引擎 (Animal Crossing: New Horizons Aesthetic)
+// =============================================================================
+let scene, camera, renderer, controls;
+let billboardPins = [];
+let showPinsState = true;
+let islandMeshes = [];
+let floatingBalloon = null;
+let animatedClouds = [];
+
+// 常駐計算向量 (Zero-GC 每幀 0 次 new THREE.Vector3)
+const _projVec = new THREE.Vector3();
+const _rayMouse = new THREE.Vector2();
+const _raycaster = new THREE.Raycaster();
+const _tempEuler = new THREE.Euler();
+let targetCameraPos = new THREE.Vector3(0, 42, 68);
+let targetLookAt = new THREE.Vector3(0, 0, 0);
+let isFlying = false;
+
+// 材質快取池
+const MatCache = {};
+function getClayMat(colorHex, roughness = 0.45, metalness = 0.05, emissiveHex = 0x000000, emissiveIntensity = 0) {
+  const key = `${colorHex}_${roughness}_${metalness}_${emissiveHex}_${emissiveIntensity}`;
+  if (!MatCache[key]) {
+    MatCache[key] = new THREE.MeshStandardMaterial({
+      color: colorHex,
+      roughness: roughness,
+      metalness: metalness,
+      emissive: emissiveHex,
+      emissiveIntensity: emissiveIntensity
+    });
+  }
+  return MatCache[key];
+}
+
+function getGlassMat(colorHex = 0xffffff, opacity = 0.35) {
+  const key = `glass_${colorHex}_${opacity}`;
+  if (!MatCache[key]) {
+    MatCache[key] = new THREE.MeshPhysicalMaterial({
+      color: colorHex,
+      roughness: 0.05,
+      metalness: 0.1,
+      transmission: 0.92,
+      ior: 1.45,
+      transparent: true,
+      opacity: opacity,
+      reflectivity: 0.8
+    });
+  }
+  return MatCache[key];
+}
+
+// -----------------------------------------------------------------------------
+// WebGL 初始化 (支援 手機 / 平板 觸控 ＆ 桌機 滑鼠)
+// -----------------------------------------------------------------------------
+function initWebGL() {
+  const container = document.getElementById('webgl-container');
+  const canvas = document.getElementById('webgl-canvas');
+
+  // 場景：動森碧海青天
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x38bdf8); // 晴空蔚藍
+  scene.fog = new THREE.FogExp2(0x38bdf8, 0.007);
+
+  // 相機
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 42, 68);
+
+  // 渲染器 (DPR Clamping，手機平滑 60 FPS)
+  renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  // 控制器：全平台觸控與滑鼠相容
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.maxDistance = 160;
+  controls.minDistance = 6;
+  controls.maxPolarAngle = Math.PI / 2 - 0.02; // 防止沉入海底
+  controls.touches = {
+    ONE: THREE.TOUCH.ROTATE,
+    TWO: THREE.TOUCH.DOLLY_PAN
+  };
+  renderer.domElement.style.touchAction = 'none';
+
+  // 暖陽光照系統 (Animal Crossing Warm Sun)
+  const hemiLight = new THREE.HemisphereLight(0xfffbeb, 0x0284c7, 0.85);
+  scene.add(hemiLight);
+
+  const sunLight = new THREE.DirectionalLight(0xfffaed, 1.35);
+  sunLight.position.set(45, 65, 35);
+  sunLight.castShadow = true;
+  sunLight.shadow.mapSize.width = 2048;
+  sunLight.shadow.mapSize.height = 2048;
+  sunLight.shadow.camera.near = 10;
+  sunLight.shadow.camera.far = 200;
+  sunLight.shadow.camera.left = -65;
+  sunLight.shadow.camera.right = 65;
+  sunLight.shadow.camera.top = 65;
+  sunLight.shadow.camera.bottom = -65;
+  scene.add(sunLight);
+
+  const seaLight = new THREE.DirectionalLight(0x38bdf8, 0.4);
+  seaLight.position.set(-30, 20, -30);
+  scene.add(seaLight);
+
+  // 構建動森海島微縮世界
+  buildTropicalOceanAndSky();
+  buildResidentServicesPlaza();
+  buildFourAnimalCrossingIslands();
+
+  // 事件綁定
+  window.addEventListener('resize', onWindowResize);
+  canvas.addEventListener('pointerdown', onPointerDown);
+
+  animate();
+}
+
+// -----------------------------------------------------------------------------
+// 熱帶蔚藍海洋、白雲與空中漂浮禮物氣球
+// -----------------------------------------------------------------------------
+let oceanMesh;
+function buildTropicalOceanAndSky() {
+  // 熱帶海洋平面
+  const oceanGeo = new THREE.PlaneGeometry(600, 600, 32, 32);
+  const oceanMat = new THREE.MeshStandardMaterial({
+    color: 0x0284c7,
+    roughness: 0.15,
+    metalness: 0.1,
+    transparent: true,
+    opacity: 0.88
+  });
+  oceanMesh = new THREE.Mesh(oceanGeo, oceanMat);
+  oceanMesh.rotation.x = -Math.PI / 2;
+  oceanMesh.position.y = -2.2;
+  oceanMesh.receiveShadow = true;
+  scene.add(oceanMesh);
+
+  // 低多邊形白雲 (Cute Cartoon Clouds)
+  for (let i = 0; i < 9; i++) {
+    const cloud = createLowPolyCloud();
+    cloud.position.set(
+      (Math.random() - 0.5) * 220,
+      28 + Math.random() * 18,
+      (Math.random() - 0.5) * 220
+    );
+    scene.add(cloud);
+    animatedClouds.push({ obj: cloud, speed: 0.04 + Math.random() * 0.05 });
+  }
+
+  // 動森經典漂浮紅氣球禮物 (Floating Balloon Present)
+  floatingBalloon = new THREE.Group();
+  const balloonMat = getClayMat(0xef4444, 0.3, 0.1);
+  const balloon = new THREE.Mesh(new THREE.SphereGeometry(1.6, 16, 16), balloonMat);
+  balloon.scale.set(1.0, 1.25, 1.0);
+  balloon.position.y = 4.2;
+  balloon.castShadow = true;
+
+  const string = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.4, 6), getClayMat(0xffffff, 0.5, 0.0));
+  string.position.y = 2.4;
+
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), getClayMat(0xf8fafc, 0.3, 0.05));
+  box.position.y = 0.6;
+  box.castShadow = true;
+  const ribbon1 = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.2, 1.25), balloonMat);
+  ribbon1.position.y = 0.6;
+  const ribbon2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.25, 1.25), balloonMat);
+  ribbon2.position.y = 0.6;
+  floatingBalloon.add(balloon, string, box, ribbon1, ribbon2);
+
+  floatingBalloon.position.set(0, 15, 0);
+  scene.add(floatingBalloon);
+
+  floatingBalloon.userData = {
+    type: 'balloon',
+    name: '動森空中漂浮禮物氣球',
+    badge: '滿分幸運獎勵',
+    speech: '咻～！你看！是動森經典的空中紅色禮物氣球！拿彈弓打下來，裡面裝著近 20 年出題委員 200 組高頻搭配詞祕笈喔！'
+  };
+  islandMeshes.push(balloon, box);
+}
+
+function createLowPolyCloud() {
+  const g = new THREE.Group();
+  const mat = getClayMat(0xffffff, 0.6, 0.0);
+  const p1 = new THREE.Mesh(new THREE.SphereGeometry(3.5, 8, 8), mat);
+  const p2 = new THREE.Mesh(new THREE.SphereGeometry(2.4, 8, 8), mat);
+  p2.position.set(-2.8, -0.6, 0);
+  const p3 = new THREE.Mesh(new THREE.SphereGeometry(2.8, 8, 8), mat);
+  p3.position.set(2.6, -0.4, 0);
+  g.add(p1, p2, p3);
+  g.scale.setScalar(0.75 + Math.random() * 0.5);
+  return g;
+}
+
+// -----------------------------------------------------------------------------
+// 中央核心：動森服務處廣場 (Resident Services Plaza) ＆ 綠葉標誌
+// -----------------------------------------------------------------------------
+function buildResidentServicesPlaza() {
+  const coreGroup = new THREE.Group();
+
+  // 鵝卵石紅磚廣場基地
+  const plaza = new THREE.Mesh(new THREE.CylinderGeometry(6.5, 7.2, 1.2, 32), getClayMat(0xd97706, 0.6, 0.05));
+  plaza.position.y = 0.6;
+  plaza.receiveShadow = true;
+  coreGroup.add(plaza);
+
+  // 狸克服務處綠白條紋帳篷 (Resident Services Tent)
+  const tentMat = getClayMat(0x10b981, 0.4, 0.05);
+  const tentRoof = new THREE.Mesh(new THREE.ConeGeometry(3.8, 3.2, 4), tentMat);
+  tentRoof.rotation.y = Math.PI / 4;
+  tentRoof.position.y = 3.6;
+  tentRoof.castShadow = true;
+  const tentWall = new THREE.Mesh(new THREE.BoxGeometry(4.2, 1.8, 4.2), getClayMat(0xfef3c7, 0.5, 0.05));
+  tentWall.position.y = 1.8;
+  tentWall.castShadow = true;
+  coreGroup.add(tentRoof, tentWall);
+
+  // 綠葉標誌旗幟 (Animal Crossing Leaf Flag)
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 6.5, 8), getClayMat(0x94a3b8, 0.3, 0.6));
+  pole.position.set(-4.2, 3.8, 3.2);
+  const flag = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.2, 0.08), getClayMat(0x10b981, 0.3, 0.1));
+  flag.position.set(-3.2, 5.8, 3.2);
+  coreGroup.add(pole, flag);
+
+  // 每日公告欄 (Bulletin Board)
+  const boardPost = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.8, 8), getClayMat(0x78350f, 0.6, 0.05));
+  boardPost.position.set(3.8, 1.4, 3.5);
+  const board = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.2, 0.15), getClayMat(0xb45309, 0.6, 0.05));
+  board.position.set(3.8, 2.2, 3.5);
+  board.rotation.y = -0.35;
+  coreGroup.add(boardPost, board);
+
+  coreGroup.userData = {
+    type: 'core',
+    name: '動森服務處廣場 (Resident Services Plaza)',
+    badge: '雙星英檢核心',
+    speech: '狸克社長公告：歡迎來到動森英檢複試教學微縮群島！初級寫作、初級口說、中級寫作與中級口說四大主題海島已全面開通，快點選島民們開始特訓吧，哩哩！'
+  };
+
+  scene.add(coreGroup);
+  islandMeshes.push(tentRoof, tentWall, board);
+  registerPin(coreGroup, '動森服務處廣場', 'RESIDENT SERVICES', '#10b981', 'unit1', 'core');
+}
+
+// -----------------------------------------------------------------------------
+// 動森海島地形與棕櫚樹 (Animal Crossing Palm Trees)
+// -----------------------------------------------------------------------------
+function buildPalmTree() {
+  const g = new THREE.Group();
+  const trunkMat = getClayMat(0x92400e, 0.65, 0.05);
+
+  // 彎曲分節樹幹
+  for (let i = 0; i < 5; i++) {
+    const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.32 - i * 0.03, 0.38 - i * 0.03, 0.9, 8), trunkMat);
+    seg.position.set(Math.sin(i * 0.25) * 0.3, i * 0.8 + 0.45, 0);
+    seg.rotation.z = -i * 0.08;
+    seg.castShadow = true;
+    g.add(seg);
+  }
+
+  // 大片棕櫚葉 (Palm Fronds)
+  const leafMat = getClayMat(0x16a34a, 0.45, 0.05);
+  for (let i = 0; i < 6; i++) {
+    const frond = new THREE.Mesh(new THREE.SphereGeometry(1.4, 8, 8), leafMat);
+    frond.scale.set(1.8, 0.2, 0.6);
+    const ang = (i / 6) * Math.PI * 2;
+    frond.position.set(Math.cos(ang) * 1.6 + 0.3, 4.4, Math.sin(ang) * 1.6);
+    frond.rotation.y = -ang;
+    frond.rotation.z = 0.35;
+    g.add(frond);
+  }
+
+  // 懸掛椰子 (Coconuts)
+  const cocoMat = getClayMat(0x713f12, 0.5, 0.05);
+  const c1 = new THREE.Mesh(new THREE.SphereGeometry(0.24, 8, 8), cocoMat);
+  c1.position.set(0.4, 4.0, 0.3);
+  const c2 = new THREE.Mesh(new THREE.SphereGeometry(0.24, 8, 8), cocoMat);
+  c2.position.set(0.1, 4.0, -0.3);
+  g.add(c1, c2);
+
+  return g;
+}
+
+// 鈴錢樹 (Money Tree with golden bags)
+function buildMoneyTree() {
+  const g = new THREE.Group();
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.55, 3.2, 8), getClayMat(0x78350f, 0.6, 0.05));
+  trunk.position.y = 1.6;
+  trunk.castShadow = true;
+  const crown = new THREE.Mesh(new THREE.SphereGeometry(2.4, 14, 14), getClayMat(0x22c55e, 0.5, 0.05));
+  crown.position.y = 4.2;
+  crown.scale.set(1.2, 0.9, 1.2);
+  crown.castShadow = true;
+  g.add(trunk, crown);
+
+  // 3 包金黃鈴錢袋 (Bell Bags with red ribbons)
+  const bagMat = getClayMat(0xfacc15, 0.35, 0.2);
+  const ribbonMat = getClayMat(0xef4444, 0.3, 0.1);
+  const bagOffsets = [[-1.4, 3.4, 0.9], [1.4, 3.4, 0.9], [0, 3.4, -1.6]];
+  bagOffsets.forEach(([bx, by, bz]) => {
+    const bag = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 10), bagMat);
+    bag.scale.set(1.0, 1.2, 1.0);
+    bag.position.set(bx, by, bz);
+    const r = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.06, 6, 12), ribbonMat);
+    r.rotation.x = Math.PI / 2;
+    r.position.set(bx, by + 0.35, bz);
+    g.add(bag, r);
+  });
+
+  return g;
+}
+
+// 星號挖化石坑洞 (Star Fossil Dig Spot)
+function buildStarDigSpot() {
+  const g = new THREE.Group();
+  const hole = new THREE.Mesh(new THREE.CircleGeometry(0.7, 16), getClayMat(0x451a03, 0.7, 0.05));
+  hole.rotation.x = -Math.PI / 2;
+  hole.position.y = 0.02;
+  const star = new THREE.Mesh(new THREE.CircleGeometry(0.35, 5), getClayMat(0x78350f, 0.7, 0.05));
+  star.rotation.x = -Math.PI / 2;
+  star.position.y = 0.03;
+  g.add(hole, star);
+  return g;
+}
+
+// -----------------------------------------------------------------------------
+// 動森手辦角色建模：狸克、西施惠、傅達、航平、茶茶丸、小潤、傑克
+// -----------------------------------------------------------------------------
+
+// 1. 狸克 (Tom Nook)
+function createTomNook(metaData) {
+  const g = new THREE.Group();
+  const tanFur = getClayMat(0xb45309, 0.45, 0.05);
+  const darkFur = getClayMat(0x3b1d08, 0.45, 0.05);
+  const whiteFur = getClayMat(0xfef3c7, 0.45, 0.05);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.75, 18, 18), tanFur);
+  head.position.y = 1.95;
+  head.castShadow = true;
+  g.add(head);
+
+  // 標誌性黑眼圈面罩
+  const maskL = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), darkFur);
+  maskL.scale.set(1.2, 0.8, 0.4);
+  maskL.position.set(-0.28, 2.05, 0.6);
+  maskL.rotation.z = -0.25;
+  const maskR = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), darkFur);
+  maskR.scale.set(1.2, 0.8, 0.4);
+  maskR.position.set(0.28, 2.05, 0.6);
+  maskR.rotation.z = 0.25;
+  g.add(maskL, maskR);
+
+  // 黑曜石大眼睛與高光
+  const eyeMat = getClayMat(0x0a0f1d, 0.15, 0.1);
+  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), eyeMat);
+  eyeL.position.set(-0.26, 2.05, 0.74);
+  const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), eyeMat);
+  eyeR.position.set(0.26, 2.05, 0.74);
+  const cMat = getClayMat(0xffffff, 0.1, 0.05);
+  const cL = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), cMat);
+  cL.position.set(-0.24, 2.08, 0.81);
+  const cR = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), cMat);
+  cR.position.set(0.28, 2.08, 0.81);
+  g.add(eyeL, eyeR, cL, cR);
+
+  // 圓腮紅與粉黑鼻
+  const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 12), whiteFur);
+  muzzle.scale.set(1.2, 0.7, 0.6);
+  muzzle.position.set(0, 1.82, 0.68);
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), darkFur);
+  nose.position.set(0, 1.9, 0.95);
+  g.add(muzzle, nose);
+
+  // 圓圓狸貓耳朵 (深色耳尖)
+  const earL = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.38, 8), darkFur);
+  earL.position.set(-0.48, 2.65, 0.1);
+  earL.rotation.z = 0.4;
+  const earR = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.38, 8), darkFur);
+  earR.position.set(0.48, 2.65, 0.1);
+  earR.rotation.z = -0.4;
+  g.add(earL, earR);
+
+  // 夏威夷綠葉襯衫身軀
+  const shirtMat = getClayMat(0x10b981, 0.4, 0.05);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.72, 1.1, 16), shirtMat);
+  body.position.y = 0.85;
+  body.castShadow = true;
+  g.add(body);
+
+  // 白色圍巾領結
+  const scarf = new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.08, 8, 20), whiteFur);
+  scarf.rotation.x = Math.PI / 2;
+  scarf.position.y = 1.35;
+  g.add(scarf);
+
+  // 手持黃色鈴錢袋
+  const bellBag = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 10), getClayMat(0xfacc15, 0.35, 0.2));
+  bellBag.scale.set(1.0, 1.25, 1.0);
+  bellBag.position.set(0.85, 0.9, 0.5);
+  const bagRibbon = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.05, 6, 12), getClayMat(0xef4444, 0.3, 0.1));
+  bagRibbon.rotation.x = Math.PI / 2;
+  bagRibbon.position.set(0.85, 1.25, 0.5);
+  g.add(bellBag, bagRibbon);
+
+  g.traverse(c => { if (c.isMesh) { c.userData = metaData; islandMeshes.push(c); } });
+  return g;
+}
+
+// 2. 西施惠 (Isabelle)
+function createIsabelle(metaData) {
+  const g = new THREE.Group();
+  const furMat = getClayMat(0xfef08a, 0.45, 0.05);
+  const whiteMat = getClayMat(0xf8fafc, 0.45, 0.05);
+  const redMat = getClayMat(0xef4444, 0.35, 0.1);
+  const bellGold = getClayMat(0xfacc15, 0.2, 0.7);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.72, 18, 18), furMat);
+  head.position.y = 1.95;
+  head.castShadow = true;
+  g.add(head);
+
+  // 垂耳
+  const earL = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 0.75, 8), furMat);
+  earL.position.set(-0.68, 1.85, 0.05);
+  earL.rotation.z = 0.35;
+  const earR = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 0.75, 8), furMat);
+  earR.position.set(0.68, 1.85, 0.05);
+  earR.rotation.z = -0.35;
+  g.add(earL, earR);
+
+  // 頭頂馬尾與雙金鈴鐺
+  const ponytail = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 10), furMat);
+  ponytail.position.set(0, 2.75, -0.1);
+  const ribbon = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.05, 6, 12), redMat);
+  ribbon.rotation.x = Math.PI / 2;
+  ribbon.position.set(0, 2.65, -0.1);
+  const b1 = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), bellGold);
+  b1.position.set(-0.1, 2.85, 0.12);
+  const b2 = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), bellGold);
+  b2.position.set(0.1, 2.85, 0.12);
+  g.add(ponytail, ribbon, b1, b2);
+
+  // 五官與笑容
+  const eyeMat = getClayMat(0x0f172a, 0.15, 0.1);
+  const eL = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), eyeMat);
+  eL.position.set(-0.24, 2.05, 0.65);
+  const eR = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), eyeMat);
+  eR.position.set(0.24, 2.05, 0.65);
+  const blushMat = getClayMat(0xf472b6, 0.5, 0.05);
+  const bL = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), blushMat);
+  bL.scale.set(1.0, 0.5, 0.3);
+  bL.position.set(-0.38, 1.85, 0.6);
+  const bR = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), blushMat);
+  bR.scale.set(1.0, 0.5, 0.3);
+  bR.position.set(0.38, 1.85, 0.6);
+  const snout = new THREE.Mesh(new THREE.SphereGeometry(0.26, 10, 10), whiteMat);
+  snout.scale.set(1.1, 0.7, 0.6);
+  snout.position.set(0, 1.85, 0.68);
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), eyeMat);
+  nose.position.set(0, 1.95, 0.9);
+  g.add(eL, eR, bL, bR, snout, nose);
+
+  // 綠格紋背心
+  const vestMat = getClayMat(0x10b981, 0.45, 0.05);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, 1.1, 16), vestMat);
+  body.position.y = 0.85;
+  body.castShadow = true;
+  g.add(body);
+
+  // 手持大聲公
+  const megaMat = getClayMat(0xef4444, 0.3, 0.1);
+  const megaphone = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.5, 10), megaMat);
+  megaphone.rotation.x = -Math.PI / 2.5;
+  megaphone.position.set(0.75, 1.1, 0.45);
+  g.add(megaphone);
+
+  g.traverse(c => { if (c.isMesh) { c.userData = metaData; islandMeshes.push(c); } });
+  return g;
+}
+
+// 3. 傅達 (Blathers)
+function createBlathers(metaData) {
+  const g = new THREE.Group();
+  const brownPlumage = getClayMat(0x5c2c16, 0.5, 0.05);
+  const creamMat = getClayMat(0xfef3c7, 0.45, 0.05);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.85, 18, 18), brownPlumage);
+  head.position.y = 1.95;
+  head.castShadow = true;
+  g.add(head);
+
+  const disc = new THREE.Mesh(new THREE.SphereGeometry(0.68, 14, 14), creamMat);
+  disc.scale.set(1.05, 0.9, 0.4);
+  disc.position.set(0, 1.95, 0.62);
+  g.add(disc);
+
+  const rimMat = getClayMat(0xfacc15, 0.2, 0.7);
+  const rL = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.04, 8, 16), rimMat);
+  rL.position.set(-0.28, 2.05, 0.92);
+  const rR = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.04, 8, 16), rimMat);
+  rR.position.set(0.28, 2.05, 0.92);
+  const eMat = getClayMat(0x0f172a, 0.15, 0.1);
+  const eL = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), eMat);
+  eL.position.set(-0.28, 2.05, 0.92);
+  const eR = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), eMat);
+  eR.position.set(0.28, 2.05, 0.92);
+  const beak = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.32, 6), getClayMat(0xf59e0b, 0.3, 0.1));
+  beak.rotation.x = Math.PI / 2;
+  beak.position.set(0, 1.82, 1.05);
+  g.add(rL, rR, eL, eR, beak);
+
+  const vest = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.75, 1.15, 16), getClayMat(0x047857, 0.45, 0.05));
+  vest.position.y = 0.85;
+  vest.castShadow = true;
+  const bowtie = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.18, 0.12), getClayMat(0xef4444, 0.3, 0.1));
+  bowtie.position.set(0, 1.35, 0.65);
+  g.add(vest, bowtie);
+
+  const mag = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.04, 8, 16), rimMat);
+  mag.position.set(0.85, 1.1, 0.55);
+  const lens = new THREE.Mesh(new THREE.CircleGeometry(0.25, 12), getGlassMat(0x38bdf8, 0.5));
+  lens.position.set(0.85, 1.1, 0.55);
+  g.add(mag, lens);
+
+  g.traverse(c => { if (c.isMesh) { c.userData = metaData; islandMeshes.push(c); } });
+  return g;
+}
+
+// 4. 航平 (Kapp'n)
+function createKappn(metaData) {
+  const g = new THREE.Group();
+  const greenMat = getClayMat(0x22c55e, 0.45, 0.05);
+  const yellowMat = getClayMat(0xfef08a, 0.5, 0.05);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.72, 16, 16), greenMat);
+  head.position.y = 1.95;
+  head.castShadow = true;
+  const dish = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 0.08, 12), getClayMat(0x1e293b, 0.3, 0.4));
+  dish.position.y = 2.65;
+  g.add(head, dish);
+
+  const beakRing = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.06, 6, 14), yellowMat);
+  beakRing.position.set(0, 1.85, 0.68);
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.22, 12), getClayMat(0x1d4ed8, 0.35, 0.1));
+  cap.position.set(0, 2.7, 0);
+  cap.rotation.z = 0.2;
+  g.add(beakRing, cap);
+
+  const boatMat = getClayMat(0x78350f, 0.6, 0.05);
+  const boat = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.2, 0.8, 16, 1, false, 0, Math.PI), boatMat);
+  boat.rotation.x = -Math.PI / 2;
+  boat.position.set(0, 0.5, 0);
+  boat.castShadow = true;
+  g.add(boat);
+
+  const ukeBody = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.65, 0.18), getClayMat(0xd97706, 0.4, 0.1));
+  ukeBody.position.set(0.65, 1.2, 0.45);
+  ukeBody.rotation.z = 0.4;
+  g.add(ukeBody);
+
+  g.traverse(c => { if (c.isMesh) { c.userData = metaData; islandMeshes.push(c); } });
+  return g;
+}
+
+// 5. 茶茶丸 (Dom)
+function createDom() {
+  const g = new THREE.Group();
+  const woolMat = getClayMat(0xf8fafc, 0.65, 0.02);
+  const hornMat = getClayMat(0xf97316, 0.45, 0.05);
+
+  const body = new THREE.Mesh(new THREE.SphereGeometry(1.2, 16, 16), woolMat);
+  body.position.y = 1.35;
+  body.castShadow = true;
+  g.add(body);
+
+  const hL = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.14, 8, 16, Math.PI * 1.4), hornMat);
+  hL.position.set(-0.95, 1.85, 0);
+  hL.rotation.y = Math.PI / 2;
+  const hR = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.14, 8, 16, Math.PI * 1.4), hornMat);
+  hR.position.set(0.95, 1.85, 0);
+  hR.rotation.y = -Math.PI / 2;
+  g.add(hL, hR);
+
+  const eyeMat = getClayMat(0x0f172a, 0.1, 0.1);
+  const tearMat = getClayMat(0x38bdf8, 0.1, 0.05);
+  const eL = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 10), eyeMat);
+  eL.position.set(-0.35, 1.45, 1.05);
+  const eR = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 10), eyeMat);
+  eR.position.set(0.35, 1.45, 1.05);
+  const tL = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), tearMat);
+  tL.position.set(-0.32, 1.35, 1.18);
+  const tR = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), tearMat);
+  tR.position.set(0.32, 1.35, 1.18);
+  g.add(eL, eR, tL, tR);
+
+  g.userData = {
+    type: 'villager',
+    name: '人氣綿羊「茶茶丸」(Dom)',
+    badge: '愛哭臉熱血島民',
+    speech: '哇啊～我是茶茶丸！看圖寫作的過去式時態一定要鎖定喔！不然我又要哇哇大哭了啦，哇哇！'
+  };
+  g.traverse(c => { if (c.isMesh) { c.userData = g.userData; islandMeshes.push(c); } });
+  return g;
+}
+
+// 6. 小潤 (Marshal)
+function createMarshal() {
+  const g = new THREE.Group();
+  const whiteMat = getClayMat(0xf8fafc, 0.45, 0.05);
+  const blondeMat = getClayMat(0xfde047, 0.45, 0.05);
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.65, 14, 14), whiteMat);
+  head.position.y = 1.45;
+  head.castShadow = true;
+  g.add(head);
+
+  const bangs = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.45, 6), blondeMat);
+  bangs.rotation.z = -0.65;
+  bangs.position.set(-0.25, 1.85, 0.45);
+  g.add(bangs);
+
+  const tail = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.28, 8, 14, Math.PI * 1.2), whiteMat);
+  tail.position.set(0, 1.2, -0.65);
+  tail.rotation.x = 0.4;
+  g.add(tail);
+
+  g.userData = {
+    type: 'villager',
+    name: '傲嬌小松鼠「小潤」(Marshal)',
+    badge: '白松鼠音律擔當',
+    speech: '哼，我是小潤。聽完錄音 5 秒內把動詞抓出來覆述，不是很簡單的事嗎？拿杯咖啡跟著我練吧。'
+  };
+  g.traverse(c => { if (c.isMesh) { c.userData = g.userData; islandMeshes.push(c); } });
+  return g;
+}
+
+// 7. 傑克 (Raymond)
+function createRaymond() {
+  const g = new THREE.Group();
+  const greyMat = getClayMat(0x64748b, 0.45, 0.05);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.65, 14, 14), greyMat);
+  head.position.y = 1.45;
+  head.castShadow = true;
+  g.add(head);
+
+  const glassMat = getClayMat(0x0f172a, 0.2, 0.8);
+  const gL = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.03, 6, 12), glassMat);
+  gL.position.set(-0.22, 1.5, 0.6);
+  const gR = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.03, 6, 12), glassMat);
+  gR.position.set(0.22, 1.5, 0.6);
+  g.add(gL, gR);
+
+  const eL = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), getClayMat(0xf59e0b, 0.1, 0.1));
+  eL.position.set(-0.22, 1.5, 0.6);
+  const eR = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), getClayMat(0x10b981, 0.1, 0.1));
+  eR.position.set(0.22, 1.5, 0.6);
+  g.add(eL, eR);
+
+  g.userData = {
+    type: 'villager',
+    name: '西裝紳士貓「傑克」(Raymond)',
+    badge: '異色瞳文法紳士',
+    speech: '早安。身為商務人士，120 字作文中的邏輯轉折詞如 Furthermore 與 Nevertheless，必須精準到位。'
+  };
+  g.traverse(c => { if (c.isMesh) { c.userData = g.userData; islandMeshes.push(c); } });
+  return g;
+}
+
+// 8. 地標輔助函式
+function buildArchLandmark() {
+  const g = new THREE.Group();
+  const mat = getClayMat(0x6366f1, 0.3, 0.4);
+  const col1 = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 4.5, 12), mat);
+  col1.position.set(-1.8, 2.25, 0);
+  const col2 = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 4.5, 12), mat);
+  col2.position.set(1.8, 2.25, 0);
+  const arch = new THREE.Mesh(new THREE.TorusGeometry(1.8, 0.35, 10, 24, Math.PI), mat);
+  arch.position.set(0, 4.5, 0);
+  g.add(col1, col2, arch);
+  return g;
+}
+
+function buildRostrumLandmark() {
+  const g = new THREE.Group();
+  const rostrum = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.6, 1.4, 20), getClayMat(0xe2e8f0, 0.3, 0.2));
+  rostrum.position.y = 0.7;
+  const glassMat = getGlassMat(0xffffff, 0.4);
+  const g1 = new THREE.Mesh(new THREE.ConeGeometry(0.65, 1.1, 12), glassMat);
+  g1.position.set(0, 2.2, 0);
+  const g2 = new THREE.Mesh(new THREE.ConeGeometry(0.65, 1.1, 12), glassMat);
+  g2.rotation.x = Math.PI;
+  g2.position.set(0, 1.1, 0);
+  g.add(rostrum, g1, g2);
+  return g;
+}
+
+// -----------------------------------------------------------------------------
+// 構建 4 大動森主題海島
+// -----------------------------------------------------------------------------
+function buildFourAnimalCrossingIslands() {
+  const units = Object.values(CHAPTER_DATA);
+
+  units.forEach(unit => {
+    const group = new THREE.Group();
+    group.position.set(unit.islandPos.x, unit.islandPos.y, unit.islandPos.z);
+
+    // 綠草皮海島
+    const turf = new THREE.Mesh(new THREE.CylinderGeometry(11, 12.5, 1.8, 32), getClayMat(0x22c55e, 0.55, 0.05));
+    turf.position.y = 0.9;
+    turf.castShadow = true;
+    turf.receiveShadow = true;
+    turf.userData = {
+      type: 'island',
+      unitCode: Object.keys(CHAPTER_DATA).find(k => CHAPTER_DATA[k].code === unit.code),
+      name: `${unit.code} ${unit.title}`,
+      badge: `${unit.badge} 動森海島`,
+      speech: unit.mentor.speech
+    };
+    group.add(turf);
+    islandMeshes.push(turf);
+
+    // 沙灘沙岸
+    const beach = new THREE.Mesh(new THREE.CylinderGeometry(13.2, 11, 1.2, 32), getClayMat(0xfef08a, 0.6, 0.05));
+    beach.position.y = -0.2;
+    beach.receiveShadow = true;
+    group.add(beach);
+
+    registerPin(turf, unit.code, unit.badge, unit.themeHex, Object.keys(CHAPTER_DATA).find(k => CHAPTER_DATA[k].code === unit.code), 'island');
+
+    if (unit.code === 'STELLA-W') {
+      const tomNook = createTomNook({
+        type: 'mentor',
+        name: '狸克 社長 (Tom Nook) ＆ STELLA',
+        badge: '初級寫作導師',
+        speech: unit.mentor.speech
+      });
+      tomNook.position.set(-3.5, 1.8, 1.5);
+      group.add(tomNook);
+      registerPin(tomNook, '狸克社長', '初級寫作導師', '#ec4899', 'unit1', 'mentor');
+
+      const moneyTree = buildMoneyTree();
+      moneyTree.position.set(3.5, 1.8, -2.5);
+      group.add(moneyTree);
+
+      const digSpot = buildStarDigSpot();
+      digSpot.position.set(-1.5, 1.8, -2.5);
+      group.add(digSpot);
+
+      const dom = createDom();
+      dom.position.set(1.5, 1.8, 3.2);
+      group.add(dom);
+      registerPin(dom, '綿羊茶茶丸', '愛哭臉島民', '#f97316', 'unit1', 'creature');
+
+    } else if (unit.code === 'STELLA-S') {
+      const isabelle = createIsabelle({
+        type: 'mentor',
+        name: '西施惠 秘書 (Isabelle) ＆ 路易',
+        badge: '初級口說教官',
+        speech: unit.mentor.speech
+      });
+      isabelle.position.set(-3.2, 1.8, 1.2);
+      group.add(isabelle);
+      registerPin(isabelle, '西施惠秘書', '初級口說教官', '#10b981', 'unit2', 'mentor');
+
+      const marshal = createMarshal();
+      marshal.position.set(3.5, 1.8, -1.8);
+      group.add(marshal);
+      registerPin(marshal, '小松鼠小潤', '音律評測官', '#fde047', 'unit2', 'creature');
+
+      const palm = buildPalmTree();
+      palm.position.set(2.5, 1.8, -3.2);
+      group.add(palm);
+
+      const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.75, 8), getGlassMat(0x38bdf8, 0.5));
+      bottle.rotation.z = Math.PI / 2.3;
+      bottle.position.set(-4.5, 0.2, 5.2);
+      group.add(bottle);
+
+    } else if (unit.code === 'JENNY-W') {
+      const blathers = createBlathers({
+        type: 'mentor',
+        name: '傅達 館長 (Blathers) ＆ JENNY',
+        badge: '中級寫作導師',
+        speech: unit.mentor.speech
+      });
+      blathers.position.set(-3.5, 1.8, 1.5);
+      group.add(blathers);
+      registerPin(blathers, '傅達館長', '中級寫作導師', '#818cf8', 'unit3', 'mentor');
+
+      const raymond = createRaymond();
+      raymond.position.set(3.5, 1.8, -1.8);
+      group.add(raymond);
+      registerPin(raymond, '紳士貓傑克', '文法把關官', '#64748b', 'unit3', 'creature');
+
+      const arch = buildArchLandmark();
+      arch.position.set(0, 1.8, -3.2);
+      group.add(arch);
+
+    } else if (unit.code === 'JENNY-S') {
+      const kappn = createKappn({
+        type: 'mentor',
+        name: '航平 船長 (Kapp\'n) ＆ 奧利瑪',
+        badge: '中級口說主考官',
+        speech: unit.mentor.speech
+      });
+      kappn.position.set(-3.5, 1.8, 1.5);
+      group.add(kappn);
+      registerPin(kappn, '航平船長', '口說導航船長', '#fbbf24', 'unit4', 'mentor');
+
+      const palm = buildPalmTree();
+      palm.position.set(3.2, 1.8, -2.8);
+      group.add(palm);
+
+      const rostrum = buildRostrumLandmark();
+      rostrum.position.set(0, 1.8, -2.8);
+      group.add(rostrum);
+    }
+
+    scene.add(group);
+  });
+}
+
+// -----------------------------------------------------------------------------
+// 3D 浮空標籤與相機控制
+// -----------------------------------------------------------------------------
+function registerPin(targetObj, title, subtitle, colorHex, unitCode, category) {
+  const pinEl = document.createElement('div');
+  pinEl.className = 'billboard-pin glass-panel px-3 py-1.5 rounded-xl border flex items-center gap-2 cursor-pointer shadow-lg select-none';
+  pinEl.style.borderColor = `${colorHex}55`;
+  pinEl.innerHTML = `
+    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 animate-pulse" style="background-color: ${colorHex}"></span>
+    <div class="leading-none">
+      <div class="text-[11px] font-black text-white whitespace-nowrap">${title}</div>
+      <div class="text-[9px] text-slate-300 font-bold whitespace-nowrap mt-0.5">${subtitle}</div>
+    </div>
+  `;
+
+  pinEl.onclick = (e) => {
+    e.stopPropagation();
+    focusEntity(targetObj, unitCode);
+  };
+
+  document.getElementById('pins-layer').appendChild(pinEl);
+  billboardPins.push({
+    el: pinEl,
+    obj: targetObj,
+    unitCode: unitCode,
+    category: category,
+    offsetY: 4.8
+  });
+}
+
+function updateBillboardPins() {
+  if (!showPinsState) return;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const placed = [];
+
+  for (let i = 0; i < billboardPins.length; i++) {
+    const pin = billboardPins[i];
+    pin.obj.getWorldPosition(_projVec);
+    _projVec.y += pin.offsetY;
+    _projVec.project(camera);
+
+    if (_projVec.z > 1.0) {
+      pin.el.style.display = 'none';
+      continue;
+    }
+
+    let x = (_projVec.x * 0.5 + 0.5) * w;
+    let y = (-(_projVec.y * 0.5) + 0.5) * h;
+
+    const pinW = 120;
+    const pinH = 36;
+    for (let j = 0; j < placed.length; j++) {
+      const p = placed[j];
+      const dx = Math.abs(x - p.x);
+      const dy = Math.abs(y - p.y);
+      if (dx < pinW && dy < pinH) {
+        y += (pinH - dy) + 6;
+      }
+    }
+    placed.push({ x, y });
+
+    pin.el.style.display = 'flex';
+    pin.el.style.left = `${Math.round(x)}px`;
+    pin.el.style.top = `${Math.round(y)}px`;
+  }
+}
+
+function togglePins() {
+  showPinsState = !showPinsState;
+  const layer = document.getElementById('pins-layer');
+  layer.style.display = showPinsState ? 'block' : 'none';
+  const btn = document.getElementById('btn-toggle-pins');
+  btn.className = showPinsState ? 'w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-sky-400 hover:border-sky-500/40 transition shadow-lg' : 'w-10 h-10 rounded-xl glass-panel flex items-center justify-center text-slate-500 transition shadow-lg';
+}
+
+function focusEntity(obj, unitCode) {
+  if (unitCode && CHAPTER_DATA[unitCode]) {
+    currentUnitCode = unitCode;
+    const unit = CHAPTER_DATA[unitCode];
+    document.querySelectorAll('.nav-island-btn').forEach(btn => btn.classList.remove('bg-sky-500/20', 'text-white'));
+    const navBtn = document.getElementById(`nav-btn-${unitCode}`);
+    if (navBtn) navBtn.classList.add('bg-sky-500/20', 'text-white');
+
+    targetCameraPos.set(unit.cameraPos.x, unit.cameraPos.y, unit.cameraPos.z);
+    targetLookAt.set(unit.islandPos.x, unit.islandPos.y + 2, unit.islandPos.z);
+    isFlying = true;
+
+    if (obj.userData && obj.userData.name) {
+      showMentorCard(obj.userData.name, obj.userData.badge || unit.badge, obj.userData.speech || unit.mentor.speech, obj.userData);
+    } else {
+      showMentorCard(unit.mentor.name, unit.mentor.badge, unit.mentor.speech, unit.mentor);
+    }
+
+    populateDrawer();
+  }
+}
+
+function flyToIsland(unitCode) {
+  focusEntity(CHAPTER_DATA[unitCode], unitCode);
+}
+
+function resetCameraOverview() {
+  targetCameraPos.set(0, 42, 68);
+  targetLookAt.set(0, 0, 0);
+  isFlying = true;
+  closeMentorCard();
+  document.querySelectorAll('.nav-island-btn').forEach(btn => btn.classList.remove('bg-sky-500/20', 'text-white'));
+}
+
+function onPointerDown(e) {
+  _rayMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  _rayMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  _raycaster.setFromCamera(_rayMouse, camera);
+
+  const intersects = _raycaster.intersectObjects(islandMeshes, true);
+  if (intersects.length > 0) {
+    let topObj = intersects[0].object;
+    while (topObj && !topObj.userData.type && topObj.parent) {
+      topObj = topObj.parent;
+    }
+    if (topObj && topObj.userData) {
+      const data = topObj.userData;
+      if (data.unitCode) {
+        focusEntity(topObj, data.unitCode);
+      } else if (data.type === 'core' || data.type === 'balloon' || data.type === 'villager') {
+        showMentorCard(data.name, data.badge, data.speech, data);
+      }
+    }
+  }
+}
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+}
+
+// -----------------------------------------------------------------------------
+// 渲染迴圈 (Zero-GC 每幀 0 次 new THREE.Vector3)
+// -----------------------------------------------------------------------------
+let clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+
+  const time = clock.getElapsedTime();
+
+  // (1) 白雲緩緩飄動
+  animatedClouds.forEach(c => {
+    c.obj.position.x += c.speed;
+    if (c.obj.position.x > 150) c.obj.position.x = -150;
+  });
+
+  // (2) 漂浮紅氣球禮物上下微浮
+  if (floatingBalloon) {
+    floatingBalloon.position.y = 15 + Math.sin(time * 2) * 0.8;
+    floatingBalloon.position.x = Math.sin(time * 0.4) * 8;
+  }
+
+  // (3) 海水微波微波漣漪
+  if (oceanMesh) {
+    oceanMesh.position.y = -2.2 + Math.sin(time * 1.5) * 0.08;
+  }
+
+  // (4) 相機平滑平移
+  if (isFlying) {
+    camera.position.lerp(targetCameraPos, 0.05);
+    controls.target.lerp(targetLookAt, 0.05);
+    if (camera.position.distanceTo(targetCameraPos) < 0.2 && controls.target.distanceTo(targetLookAt) < 0.2) {
+      isFlying = false;
+    }
+  }
+
+  controls.update();
+  updateBillboardPins();
+  renderer.render(scene, camera);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initWebGL();
+  initLightboxThumbs();
+  populateDrawer();
+});
+</script>
+</body>
+</html>

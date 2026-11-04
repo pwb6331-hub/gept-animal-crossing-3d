@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <rect width="1200" height="800" fill="#060b18"/>
+  <rect x="40" y="30" width="1120" height="90" rx="16" fill="#6366f1" fill-opacity="0.15" stroke="#6366f1" stroke-width="2"/>
+  <text x="70" y="70" font-family="sans-serif" font-weight="900" font-size="28" fill="#818cf8">【中級克漏字與寫作】介系詞「TO ＋ V-ING」八大天王雷達圖</text>
+  <text x="70" y="102" font-family="sans-serif" font-size="16" fill="#94a3b8">命題委員萬年考題：這裡的 to 全都是「介系詞」，後面 100% 接動名詞（V-ing），選原形動詞直接扣分！</text>
+
+  <!-- 8 Cards in a 4x2 Grid -->
+  <g transform="translate(60, 150)">
+    <!-- 1 -->
+    <rect x="0" y="0" width="250" height="120" rx="10" fill="#1e293b" stroke="#6366f1"/>
+    <text x="20" y="35" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">① 期待…</text>
+    <text x="20" y="65" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff">look forward to +</text>
+    <text x="20" y="95" font-family="sans-serif" font-weight="900" font-size="18" fill="#4ade80">V-ing / N</text>
+
+    <!-- 2 -->
+    <rect x="280" y="0" width="250" height="120" rx="10" fill="#1e293b" stroke="#6366f1"/>
+    <text x="300" y="35" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">② 習慣於…</text>
+    <text x="300" y="65" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff">be accustomed to +</text>
+    <text x="300" y="95" font-family="sans-serif" font-weight="900" font-size="18" fill="#4ade80">V-ing (= used to)</text>
+
+    <!-- 3 -->
+    <rect x="560" y="0" width="250" height="120" rx="10" fill="#1e293b" stroke="#6366f1"/>
+    <text x="580" y="35" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">③ 致力於／奉獻於…</text>
+    <text x="580" y="65" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff">be devoted to +</text>
+    <text x="580" y="95" font-family="sans-serif" font-weight="900" font-size="18" fill="#4ade80">V-ing (= dedicated to)</text>
+
+    <!-- 4 -->
+    <rect x="840" y="0" width="250" height="120" rx="10" fill="#1e293b" stroke="#6366f1"/>
+    <text x="860" y="35" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">④ 反對…</text>
+    <text x="860" y="65" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff">object to +</text>
+    <text x="860" y="95" font-family="sans-serif" font-weight="900" font-size="18" fill="#4ade80">V-ing (= oppose)</text>
+
+    <!-- Row 2 -->
+    <!-- 5 -->
+    <rect x="0" y="150" width="250" height="120" rx="10" fill="#1e293b" stroke="#ec4899"/>
+    <text x="20" y="185" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f472b6">⑤ 導致／促成…</text>
+    <text x="20" y="215" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff">lead to / contribute to +</text>
+    <text x="20" y="245" font-family="sans-serif" font-weight="900" font-size="18" fill="#4ade80">V-ing / N</text>
+
+    <!-- 6 -->
+    <rect x="280" y="150" width="250" height="120" rx="10" fill="#1e293b" stroke="#ec4899"/>
+    <text x="300" y="185" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f472b6">⑥ 當談及…／論及…</text>
+    <text x="300" y="215" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff">When it comes to +</text>
+    <text x="300" y="245" font-family="sans-serif" font-weight="900" font-size="18" fill="#4ade80">V-ing / N</text>
+
+    <!-- 7 -->
+    <rect x="560" y="150" width="250" height="120" rx="10" fill="#1e293b" stroke="#ec4899"/>
+    <text x="580" y="185" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f472b6">⑦ 除了…之外（還）</text>
+    <text x="580" y="215" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff">In addition to +</text>
+    <text x="580" y="245" font-family="sans-serif" font-weight="900" font-size="18" fill="#4ade80">V-ing / N</text>
+
+    <!-- 8 -->
+    <rect x="840" y="150" width="250" height="120" rx="10" fill="#1e293b" stroke="#ec4899"/>
+    <text x="860" y="185" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f472b6">⑧ 關注於…／專注於…</text>
+    <text x="860" y="215" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ffffff">pay attention to +</text>
+    <text x="860" y="245" font-family="sans-serif" font-weight="900" font-size="18" fill="#4ade80">V-ing / N</text>
+  </g>
+
+  <!-- Big Example sentence -->
+  <g transform="translate(60, 480)">
+    <rect width="1080" height="260" rx="14" fill="#0f172a" stroke="#475569"/>
+    <text x="40" y="40" font-family="sans-serif" font-weight="bold" font-size="18" fill="#facc15">💡 經典高分例句剖析（作文中直接套用立刻加分）：</text>
+    
+    <rect x="40" y="65" width="1000" height="80" rx="8" fill="#1e293b"/>
+    <text x="60" y="98" font-family="sans-serif" font-size="15" fill="#e2e8f0">例句 1: "We are all <tspan fill="#60a5fa" font-weight="bold">looking forward to visiting</tspan> the newly opened science museum next weekend."</text>
+    <text x="60" y="125" font-family="sans-serif" font-size="13" fill="#94a3b8">解析：visit 必須加 -ing，寫 visit 直接 0 分。</text>
+
+    <rect x="40" y="160" width="1000" height="80" rx="8" fill="#1e293b"/>
+    <text x="60" y="193" font-family="sans-serif" font-size="15" fill="#e2e8f0">例句 2: "<tspan fill="#f472b6" font-weight="bold">When it comes to learning</tspan> English, consistency plays a much more vital role than talent."</text>
+    <text x="60" y="220" font-family="sans-serif" font-size="13" fill="#94a3b8">解析：learn 必須加 -ing，同時搭配 plays a vital role in，展現雙重滿分搭配詞組合技！</text>
+  </g>
+</svg>

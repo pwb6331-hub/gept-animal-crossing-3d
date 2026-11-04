@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg1)"/>
+  <!-- Header -->
+  <rect x="40" y="30" width="1120" height="90" rx="16" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+  <text x="70" y="70" font-family="'Source Han Sans', 'Noto Sans TC', sans-serif" font-weight="900" font-size="28" fill="#60a5fa">【STELLA 初級寫作】花費四大金剛 SPEND / TAKE / COST / PAY 空間定位秒殺圖</text>
+  <text x="70" y="102" font-family="'Source Han Sans', 'Noto Sans TC', sans-serif" font-size="16" fill="#94a3b8">看主詞與空格後關鍵字 3 秒選出正解 ｜ 拒絕中式英文 Chinglish ｜ 考前衝刺 100% 命中</text>
+
+  <!-- 4 Cards -->
+  <!-- SPEND -->
+  <g transform="translate(60, 150)">
+    <rect width="250" height="360" rx="14" fill="url(#cardGrad)" stroke="#38bdf8" stroke-width="2"/>
+    <rect x="0" y="0" width="250" height="55" rx="14" fill="#0284c7"/>
+    <text x="125" y="38" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="26" fill="#ffffff">SPEND</text>
+    <text x="25" y="95" font-family="sans-serif" font-weight="700" font-size="16" fill="#38bdf8">主詞身分：</text>
+    <rect x="110" y="78" width="115" height="26" rx="6" fill="#0369a1"/>
+    <text x="167" y="96" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="15" fill="#ffffff">人 (Jenny / I)</text>
+    <text x="25" y="140" font-family="sans-serif" font-weight="700" font-size="16" fill="#38bdf8">所花對象：</text>
+    <text x="110" y="140" font-family="sans-serif" font-size="16" fill="#f1f5f9">時間 或 金錢</text>
+    <text x="25" y="185" font-family="sans-serif" font-weight="700" font-size="16" fill="#38bdf8">後接結構：</text>
+    <rect x="25" y="200" width="200" height="50" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-dasharray="4"/>
+    <text x="125" y="222" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="15" fill="#facc15">on + 名詞</text>
+    <text x="125" y="242" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="15" fill="#4ade80">(in) + V-ing</text>
+    <rect x="20" y="270" width="210" height="70" rx="8" fill="#1e293b"/>
+    <text x="30" y="295" font-family="sans-serif" font-size="13" fill="#bae6fd">口訣：Spend 像「死命賺錢</text>
+    <text x="30" y="315" font-family="sans-serif" font-size="13" fill="#bae6fd">的<tspan fill="#facc15" font-weight="bold">人</tspan>」，後面動詞愛加</text>
+    <text x="30" y="333" font-family="sans-serif" font-weight="bold" font-size="14" fill="#4ade80">-ing！</text>
+  </g>
+
+  <!-- TAKE -->
+  <g transform="translate(340, 150)">
+    <rect width="250" height="360" rx="14" fill="url(#cardGrad)" stroke="#ec4899" stroke-width="2"/>
+    <rect x="0" y="0" width="250" height="55" rx="14" fill="#db2777"/>
+    <text x="125" y="38" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="26" fill="#ffffff">TAKE</text>
+    <text x="25" y="95" font-family="sans-serif" font-weight="700" font-size="16" fill="#f472b6">主詞身分：</text>
+    <rect x="110" y="78" width="115" height="26" rx="6" fill="#be185d"/>
+    <text x="167" y="96" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="15" fill="#ffffff">It 虛主詞 / 事情</text>
+    <text x="25" y="140" font-family="sans-serif" font-weight="700" font-size="16" fill="#f472b6">所花對象：</text>
+    <text x="110" y="140" font-family="sans-serif" font-size="16" fill="#f1f5f9">時間 (Time)</text>
+    <text x="25" y="185" font-family="sans-serif" font-weight="700" font-size="16" fill="#f472b6">後接結構：</text>
+    <rect x="25" y="200" width="200" height="50" rx="8" fill="#0f172a" stroke="#ec4899" stroke-dasharray="4"/>
+    <text x="125" y="232" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="18" fill="#f472b6">to + 原形動詞 (V)</text>
+    <rect x="20" y="270" width="210" height="70" rx="8" fill="#1e293b"/>
+    <text x="30" y="295" font-family="sans-serif" font-size="13" fill="#fbcfe8">口訣：Take 開頭是 <tspan fill="#facc15" font-weight="bold">T</tspan></text>
+    <text x="30" y="315" font-family="sans-serif" font-size="13" fill="#fbcfe8">只花 <tspan fill="#facc15" font-weight="bold">Time</tspan>，後接</text>
+    <text x="30" y="333" font-family="sans-serif" font-weight="bold" font-size="14" fill="#f472b6">To + V (原形動詞)！</text>
+  </g>
+
+  <!-- COST -->
+  <g transform="translate(620, 150)">
+    <rect width="250" height="360" rx="14" fill="url(#cardGrad)" stroke="#eab308" stroke-width="2"/>
+    <rect x="0" y="0" width="250" height="55" rx="14" fill="#ca8a04"/>
+    <text x="125" y="38" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="26" fill="#ffffff">COST</text>
+    <text x="25" y="95" font-family="sans-serif" font-weight="700" font-size="16" fill="#facc15">主詞身分：</text>
+    <rect x="110" y="78" width="115" height="26" rx="6" fill="#a16207"/>
+    <text x="167" y="96" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="15" fill="#ffffff">物品 (The car) / It</text>
+    <text x="25" y="140" font-family="sans-serif" font-weight="700" font-size="16" fill="#facc15">所花對象：</text>
+    <text x="110" y="140" font-family="sans-serif" font-size="16" fill="#f1f5f9">金錢 (Coin $)</text>
+    <text x="25" y="185" font-family="sans-serif" font-weight="700" font-size="16" fill="#facc15">後接結構：</text>
+    <rect x="25" y="200" width="200" height="50" rx="8" fill="#0f172a" stroke="#eab308" stroke-dasharray="4"/>
+    <text x="125" y="232" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="17" fill="#facc15">人 + 金額 ($)</text>
+    <rect x="20" y="270" width="210" height="70" rx="8" fill="#1e293b"/>
+    <text x="30" y="295" font-family="sans-serif" font-size="13" fill="#fef08a">口訣：Cost 開頭是 <tspan fill="#facc15" font-weight="bold">C</tspan></text>
+    <text x="30" y="315" font-family="sans-serif" font-size="13" fill="#fef08a">像錢幣 <tspan fill="#facc15" font-weight="bold">Coin</tspan>，主詞</text>
+    <text x="30" y="333" font-family="sans-serif" font-weight="bold" font-size="14" fill="#facc15">必為「物品」絕不能是人！</text>
+  </g>
+
+  <!-- PAY -->
+  <g transform="translate(900, 150)">
+    <rect width="250" height="360" rx="14" fill="url(#cardGrad)" stroke="#10b981" stroke-width="2"/>
+    <rect x="0" y="0" width="250" height="55" rx="14" fill="#059669"/>
+    <text x="125" y="38" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="26" fill="#ffffff">PAY</text>
+    <text x="25" y="95" font-family="sans-serif" font-weight="700" font-size="16" fill="#34d399">主詞身分：</text>
+    <rect x="110" y="78" width="115" height="26" rx="6" fill="#047857"/>
+    <text x="167" y="96" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="15" fill="#ffffff">人 (He / Mom)</text>
+    <text x="25" y="140" font-family="sans-serif" font-weight="700" font-size="16" fill="#34d399">所花對象：</text>
+    <text x="110" y="140" font-family="sans-serif" font-size="16" fill="#f1f5f9">金錢</text>
+    <text x="25" y="185" font-family="sans-serif" font-weight="700" font-size="16" fill="#34d399">後接結構：</text>
+    <rect x="25" y="200" width="200" height="50" rx="8" fill="#0f172a" stroke="#10b981" stroke-dasharray="4"/>
+    <text x="125" y="232" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="17" fill="#34d399">for + 買的東西</text>
+    <rect x="20" y="270" width="210" height="70" rx="8" fill="#1e293b"/>
+    <text x="30" y="295" font-family="sans-serif" font-size="13" fill="#a7f3d0">口訣：一手付錢 (<tspan fill="#34d399" font-weight="bold">pay</tspan>)</text>
+    <text x="30" y="315" font-family="sans-serif" font-size="13" fill="#a7f3d0">一手換取 (<tspan fill="#facc15" font-weight="bold">for</tspan>) 東西！</text>
+    <text x="30" y="333" font-family="sans-serif" font-weight="bold" font-size="14" fill="#34d399">pay $100 for lunch</text>
+  </g>
+
+  <!-- Bottom: 50-word Picture Writing Formula -->
+  <g transform="translate(60, 540)">
+    <rect width="1080" height="220" rx="16" fill="#1e293b" stroke="#6366f1" stroke-width="2"/>
+    <text x="40" y="45" font-family="sans-serif" font-weight="900" font-size="22" fill="#818cf8">【初級複試第二部分】50字看圖連環故事 4 格魔術公式（穩拿滿分 5 級分）</text>
+    
+    <rect x="40" y="70" width="235" height="125" rx="10" fill="#0f172a" stroke="#475569"/>
+    <text x="60" y="100" font-family="sans-serif" font-weight="bold" font-size="16" fill="#38bdf8">1. 起 (Introduction)</text>
+    <text x="60" y="128" font-family="sans-serif" font-size="14" fill="#cbd5e1">時間+人物+地點</text>
+    <text x="60" y="152" font-family="sans-serif" font-size="13" fill="#94a3b8">"One sunny morning, Tom and Lucy went..."</text>
+    <text x="60" y="174" font-family="sans-serif" font-weight="bold" font-size="13" fill="#facc15">過去式時態鎖定！</text>
+
+    <rect x="295" y="70" width="235" height="125" rx="10" fill="#0f172a" stroke="#475569"/>
+    <text x="315" y="100" font-family="sans-serif" font-weight="bold" font-size="16" fill="#ec4899">2. 承 (Development)</text>
+    <text x="315" y="128" font-family="sans-serif" font-size="14" fill="#cbd5e1">情節開展+動作</text>
+    <text x="315" y="152" font-family="sans-serif" font-size="13" fill="#94a3b8">"While they were playing, they suddenly saw..."</text>
+    <text x="315" y="174" font-family="sans-serif" font-weight="bold" font-size="13" fill="#f472b6">連接詞 When/While</text>
+
+    <rect x="550" y="70" width="235" height="125" rx="10" fill="#0f172a" stroke="#475569"/>
+    <text x="570" y="100" font-family="sans-serif" font-weight="bold" font-size="16" fill="#eab308">3. 轉 (Climax/Trouble)</text>
+    <text x="570" y="128" font-family="sans-serif" font-size="14" fill="#cbd5e1">意外危機+反應</text>
+    <text x="570" y="152" font-family="sans-serif" font-size="13" fill="#94a3b8">"Unexpectedly, a dog barked and jumped..."</text>
+    <text x="570" y="174" font-family="sans-serif" font-weight="bold" font-size="13" fill="#facc15">副詞 However / Suddenly</text>
+
+    <rect x="805" y="70" width="235" height="125" rx="10" fill="#0f172a" stroke="#475569"/>
+    <text x="825" y="100" font-family="sans-serif" font-weight="bold" font-size="16" fill="#10b981">4. 合 (Resolution)</text>
+    <text x="825" y="128" font-family="sans-serif" font-size="14" fill="#cbd5e1">問題解決+心情</text>
+    <text x="825" y="152" font-family="sans-serif" font-size="13" fill="#94a3b8">"Finally, the owner came. They felt relieved."</text>
+    <text x="825" y="174" font-family="sans-serif" font-weight="bold" font-size="13" fill="#34d399">結尾情緒形容詞點綴！</text>
+  </g>
+</svg>

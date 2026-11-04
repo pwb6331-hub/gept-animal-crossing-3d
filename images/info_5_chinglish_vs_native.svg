@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <rect width="1200" height="800" fill="#0f172a"/>
+  <rect x="40" y="30" width="1120" height="90" rx="16" fill="#ef4444" fill-opacity="0.15" stroke="#ef4444" stroke-width="2"/>
+  <text x="70" y="70" font-family="sans-serif" font-weight="900" font-size="28" fill="#f87171">【20 年出題委員秘傳】中式英文 (Chinglish ❌) vs 母語黃金搭配 (Native ✅) 大對決</text>
+  <text x="70" y="102" font-family="sans-serif" font-size="16" fill="#94a3b8">英檢複試寫作閱卷委員專挑的扣分重災區 ｜ 掌握這 8 組，寫作直接從 3 級分躍升 5 級分！</text>
+
+  <!-- Table -->
+  <g transform="translate(60, 140)">
+    <!-- Header -->
+    <rect width="1080" height="50" rx="8" fill="#1e293b"/>
+    <text x="40" y="32" font-family="sans-serif" font-weight="bold" font-size="16" fill="#94a3b8">中文想表達的意思</text>
+    <text x="320" y="32" font-family="sans-serif" font-weight="bold" font-size="16" fill="#f87171">❌ 考生最常寫錯的中式英文</text>
+    <text x="660" y="32" font-family="sans-serif" font-weight="bold" font-size="16" fill="#4ade80">✅ 出題委員給滿分的黃金搭配詞</text>
+
+    <!-- Row 1 -->
+    <rect y="55" width="1080" height="60" rx="6" fill="#0b0f19"/>
+    <text x="40" y="90" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f1f5f9">1. 進行問卷調查</text>
+    <text x="320" y="90" font-family="sans-serif" font-size="15" fill="#fca5a5">make a survey / do a survey</text>
+    <text x="660" y="90" font-family="sans-serif" font-weight="bold" font-size="16" fill="#86efac">conduct / carry out a survey</text>
+
+    <!-- Row 2 -->
+    <rect y="120" width="1080" height="60" rx="6" fill="#1e293b"/>
+    <text x="40" y="155" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f1f5f9">2. 得出結論</text>
+    <text x="320" y="155" font-family="sans-serif" font-size="15" fill="#fca5a5">make a conclusion</text>
+    <text x="660" y="155" font-family="sans-serif" font-weight="bold" font-size="16" fill="#86efac">draw / reach a conclusion</text>
+
+    <!-- Row 3 -->
+    <rect y="185" width="1080" height="60" rx="6" fill="#0b0f19"/>
+    <text x="40" y="220" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f1f5f9">3. 吃藥 / 寫日記</text>
+    <text x="320" y="220" font-family="sans-serif" font-size="15" fill="#fca5a5">eat medicine / write a diary</text>
+    <text x="660" y="220" font-family="sans-serif" font-weight="bold" font-size="16" fill="#86efac">take medicine / keep a diary</text>
+
+    <!-- Row 4 -->
+    <rect y="250" width="1080" height="60" rx="6" fill="#1e293b"/>
+    <text x="40" y="285" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f1f5f9">4. 繳罰款 / 吃罰單</text>
+    <text x="320" y="285" font-family="sans-serif" font-size="15" fill="#fca5a5">eat a fine / get a fine</text>
+    <text x="660" y="285" font-family="sans-serif" font-weight="bold" font-size="16" fill="#86efac">pay a (heavy) fine</text>
+
+    <!-- Row 5 -->
+    <rect y="315" width="1080" height="60" rx="6" fill="#0b0f19"/>
+    <text x="40" y="350" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f1f5f9">5. 高比例 / 高百分比</text>
+    <text x="320" y="350" font-family="sans-serif" font-size="15" fill="#fca5a5">big percentage / many percentage</text>
+    <text x="660" y="350" font-family="sans-serif" font-weight="bold" font-size="16" fill="#86efac">a high / large percentage of...</text>
+
+    <!-- Row 6 -->
+    <rect y="380" width="1080" height="60" rx="6" fill="#1e293b"/>
+    <text x="40" y="415" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f1f5f9">6. 對…造成嚴重損害</text>
+    <text x="320" y="415" font-family="sans-serif" font-size="15" fill="#fca5a5">make a big damage for</text>
+    <text x="660" y="415" font-family="sans-serif" font-weight="bold" font-size="16" fill="#86efac">cause / do severe damage to (不可數)</text>
+
+    <!-- Row 7 -->
+    <rect y="445" width="1080" height="60" rx="6" fill="#0b0f19"/>
+    <text x="40" y="480" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f1f5f9">7. 由…所組成 (天生無被動)</text>
+    <text x="320" y="480" font-family="sans-serif" font-size="15" fill="#fca5a5">be consisted of</text>
+    <text x="660" y="480" font-family="sans-serif" font-weight="bold" font-size="16" fill="#86efac">consist of (= be composed of)</text>
+
+    <!-- Row 8 -->
+    <rect y="510" width="1080" height="60" rx="6" fill="#1e293b"/>
+    <text x="40" y="545" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f1f5f9">8. 比…優越 / 更好</text>
+    <text x="320" y="545" font-family="sans-serif" font-size="15" fill="#fca5a5">be superior than</text>
+    <text x="660" y="545" font-family="sans-serif" font-weight="bold" font-size="16" fill="#86efac">be superior / inferior to (配to不配than)</text>
+  </g>
+</svg>

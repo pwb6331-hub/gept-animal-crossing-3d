@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <rect width="1200" height="800" fill="#060b18"/>
+  <rect x="40" y="30" width="1120" height="90" rx="16" fill="#f97316" fill-opacity="0.15" stroke="#f97316" stroke-width="2"/>
+  <text x="70" y="70" font-family="sans-serif" font-weight="900" font-size="28" fill="#fb923c">【JENNY 中級口說】90 秒看圖敘述時間分配沙漏 ＆ PREP 深度回答雷達圖</text>
+  <text x="70" y="102" font-family="sans-serif" font-size="16" fill="#94a3b8">看圖敘述 30 秒審題 90 秒作答 ｜ PREP 邏輯框架 ｜ 連音 (Linking) 與同化技巧</text>
+
+  <!-- Left: 90 秒看圖敘述時間分配 -->
+  <g transform="translate(60, 150)">
+    <rect width="520" height="380" rx="14" fill="#1e293b" stroke="#f97316" stroke-width="2"/>
+    <rect x="0" y="0" width="520" height="55" rx="14" fill="#c2410c"/>
+    <text x="260" y="38" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff">第三部分：看圖敘述 90 秒實戰配速沙漏</text>
+
+    <g transform="translate(30, 80)">
+      <rect width="460" height="60" rx="8" fill="#0f172a" stroke="#ea580c"/>
+      <circle cx="35" cy="30" r="16" fill="#ea580c"/>
+      <text x="35" y="36" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ffffff">1</text>
+      <text x="65" y="28" font-family="sans-serif" font-weight="bold" font-size="15" fill="#fdba74">0 ~ 15 秒：全景概述 (Overall Setting)</text>
+      <text x="65" y="48" font-family="sans-serif" font-size="13" fill="#cbd5e1">"In this picture, we can see a busy outdoor market on Sunday..."</text>
+    </g>
+
+    <g transform="translate(30, 150)">
+      <rect width="460" height="60" rx="8" fill="#0f172a" stroke="#f97316"/>
+      <circle cx="35" cy="30" r="16" fill="#f97316"/>
+      <text x="35" y="36" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ffffff">2</text>
+      <text x="65" y="28" font-family="sans-serif" font-weight="bold" font-size="15" fill="#fed7aa">15 ~ 50 秒：核心人物與主要情節 (Foreground)</text>
+      <text x="65" y="48" font-family="sans-serif" font-size="13" fill="#cbd5e1">"On the left, a vendor is introducing fresh fruit while a woman..."</text>
+    </g>
+
+    <g transform="translate(30, 220)">
+      <rect width="460" height="60" rx="8" fill="#0f172a" stroke="#fbbf24"/>
+      <circle cx="35" cy="30" r="16" fill="#fbbf24"/>
+      <text x="35" y="36" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14" fill="#0f172a">3</text>
+      <text x="65" y="28" font-family="sans-serif" font-weight="bold" font-size="15" fill="#fef08a">50 ~ 75 秒：背景細節與次要衝突 (Background &amp; Conflict)</text>
+      <text x="65" y="48" font-family="sans-serif" font-size="13" fill="#cbd5e1">"In the background, two children are chasing a cute puppy..."</text>
+    </g>
+
+    <g transform="translate(30, 290)">
+      <rect width="460" height="60" rx="8" fill="#0f172a" stroke="#22c55e"/>
+      <circle cx="35" cy="30" r="16" fill="#22c55e"/>
+      <text x="35" y="36" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14" fill="#ffffff">4</text>
+      <text x="65" y="28" font-family="sans-serif" font-weight="bold" font-size="15" fill="#86efac">75 ~ 90 秒：推測未來與氛圍總結 (Inference &amp; Conclusion)</text>
+      <text x="65" y="48" font-family="sans-serif" font-size="13" fill="#cbd5e1">"Judging from their joyful smiles, they must be enjoying their weekend."</text>
+    </g>
+  </g>
+
+  <!-- Right: PREP 邏輯框架 -->
+  <g transform="translate(620, 150)">
+    <rect width="520" height="380" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <rect x="0" y="0" width="520" height="55" rx="14" fill="#0284c7"/>
+    <text x="260" y="38" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff">第二部分：回答問題 PREP 深度框架</text>
+
+    <!-- Point -->
+    <rect x="25" y="75" width="470" height="65" rx="8" fill="#0f172a" stroke="#38bdf8"/>
+    <text x="45" y="100" font-family="sans-serif" font-weight="bold" font-size="15" fill="#38bdf8">P - Point (直接表明立場)：</text>
+    <text x="45" y="125" font-family="sans-serif" font-size="13" fill="#cbd5e1">"I strongly believe that public transportation should be promoted."</text>
+
+    <!-- Reason -->
+    <rect x="25" y="150" width="470" height="65" rx="8" fill="#0f172a" stroke="#ec4899"/>
+    <text x="45" y="175" font-family="sans-serif" font-weight="bold" font-size="15" fill="#ec4899">R - Reason (陳述核心原因)：</text>
+    <text x="45" y="200" font-family="sans-serif" font-size="13" fill="#cbd5e1">"The primary reason is that it remarkably reduces carbon emissions."</text>
+
+    <!-- Example -->
+    <rect x="25" y="225" width="470" height="65" rx="8" fill="#0f172a" stroke="#facc15"/>
+    <text x="45" y="250" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">E - Example (舉出生活實例)：</text>
+    <text x="45" y="275" font-family="sans-serif" font-size="13" fill="#cbd5e1">"For instance, taking the MRT saves me thirty minutes every morning."</text>
+
+    <!-- Point -->
+    <rect x="25" y="300" width="470" height="65" rx="8" fill="#0f172a" stroke="#4ade80"/>
+    <text x="45" y="325" font-family="sans-serif" font-weight="bold" font-size="15" fill="#4ade80">P - Point (重申與昇華觀點)：</text>
+    <text x="45" y="350" font-family="sans-serif" font-size="13" fill="#cbd5e1">"Therefore, using public transit benefits both individuals and the planet."</text>
+  </g>
+
+  <!-- Bottom Linking & Assimilation Guide -->
+  <g transform="translate(60, 560)">
+    <rect width="1080" height="200" rx="14" fill="#0f172a" stroke="#475569"/>
+    <text x="40" y="35" font-family="sans-serif" font-weight="bold" font-size="18" fill="#facc15">🗣️ 中級口說母語級流利秘密武器：連音 (Linking) 與同化 (Assimilation) 規則</text>
+
+    <rect x="40" y="60" width="330" height="115" rx="8" fill="#1e293b"/>
+    <text x="55" y="88" font-family="sans-serif" font-weight="bold" font-size="15" fill="#38bdf8">1. 子音 ＋ 母音連讀 (C + V)</text>
+    <text x="55" y="112" font-family="sans-serif" font-size="13" fill="#cbd5e1">前字尾子音與後字首母音滑順拼讀：</text>
+    <text x="55" y="132" font-family="sans-serif" font-weight="bold" font-size="14" fill="#a7f3d0">• "take it" ➔ 讀成 [te-kit]</text>
+    <text x="55" y="152" font-family="sans-serif" font-weight="bold" font-size="14" fill="#a7f3d0">• "hold on" ➔ 讀成 [hol-don]</text>
+
+    <rect x="400" y="60" width="330" height="115" rx="8" fill="#1e293b"/>
+    <text x="415" y="88" font-family="sans-serif" font-weight="bold" font-size="15" fill="#ec4899">2. 相同子音疊讀 (C + C)</text>
+    <text x="415" y="112" font-family="sans-serif" font-size="13" fill="#cbd5e1">前字尾與後字首相同子音，合讀一次：</text>
+    <text x="415" y="132" font-family="sans-serif" font-weight="bold" font-size="14" fill="#fbcfe8">• "bad day" ➔ 讀成 [ba-day] (停頓延長)</text>
+    <text x="415" y="152" font-family="sans-serif" font-weight="bold" font-size="14" fill="#fbcfe8">• "stop talking" ➔ 讀成 [sto-ptalking]</text>
+
+    <rect x="760" y="60" width="330" height="115" rx="8" fill="#1e293b"/>
+    <text x="775" y="88" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">3. 語音同化 (Assimilation)</text>
+    <text x="775" y="112" font-family="sans-serif" font-size="13" fill="#cbd5e1">遇到 y [j] 產生音變提升自然度：</text>
+    <text x="775" y="132" font-family="sans-serif" font-weight="bold" font-size="14" fill="#fde68a">• "meet you" [t]+[j] ➔ [mi-tʃu]</text>
+    <text x="775" y="152" font-family="sans-serif" font-weight="bold" font-size="14" fill="#fde68a">• "did you" [d]+[j] ➔ [di-dʒu]</text>
+  </g>
+</svg>

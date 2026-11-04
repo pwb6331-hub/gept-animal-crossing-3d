@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <rect width="1200" height="800" fill="#0b0f19"/>
+  <rect x="40" y="30" width="1120" height="90" rx="16" fill="#8b5cf6" fill-opacity="0.15" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="70" y="70" font-family="sans-serif" font-weight="900" font-size="28" fill="#a78bfa">【JENNY 中級寫作】中譯英句構逆襲 ＆ 120 字兩段式引導作文黃金骨架</text>
+  <text x="70" y="102" font-family="sans-serif" font-size="16" fill="#94a3b8">官方聽診室 76 弱點單字攻克 ｜ 分詞構句與關代 ｜ 避開 Chinglish 雙段式滿分範本</text>
+
+  <!-- Part 1: 中譯英 -->
+  <g transform="translate(60, 150)">
+    <rect width="520" height="380" rx="14" fill="#1e1b4b" fill-opacity="0.6" stroke="#8b5cf6" stroke-width="2"/>
+    <rect x="0" y="0" width="520" height="55" rx="14" fill="#6d28d9"/>
+    <text x="260" y="38" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff">第一部分：中譯英（必備高分句型庫）</text>
+    
+    <rect x="20" y="75" width="480" height="85" rx="8" fill="#0f172a" stroke="#7c3aed"/>
+    <text x="35" y="100" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">① 進行調查／實驗（秒殺搭配詞）：</text>
+    <text x="35" y="125" font-family="sans-serif" font-size="14" fill="#f87171">❌ 考生盲點：make a survey / test</text>
+    <text x="35" y="145" font-family="sans-serif" font-weight="bold" font-size="14" fill="#4ade80">✅ 滿分句：conduct / carry out a survey on...</text>
+
+    <rect x="20" y="175" width="480" height="85" rx="8" fill="#0f172a" stroke="#7c3aed"/>
+    <text x="35" y="200" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">② 扮演關鍵角色（動詞 play＋介系詞 in）：</text>
+    <text x="35" y="225" font-family="sans-serif" font-size="14" fill="#f87171">❌ 考生盲點：act an important role for</text>
+    <text x="35" y="245" font-family="sans-serif" font-weight="bold" font-size="14" fill="#4ade80">✅ 滿分句：play a vital / crucial role in reducing pollution.</text>
+
+    <rect x="20" y="275" width="480" height="85" rx="8" fill="#0f172a" stroke="#7c3aed"/>
+    <text x="35" y="300" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">③ 分詞構句（簡化句子，展現高階句構）：</text>
+    <text x="35" y="325" font-family="sans-serif" font-size="13" fill="#cbd5e1">原句: Because they realized the danger, they called...</text>
+    <text x="35" y="345" font-family="sans-serif" font-weight="bold" font-size="14" fill="#c084fc">分詞: Realizing the potential danger, they immediately called...</text>
+  </g>
+
+  <!-- Part 2: 120字引導作文 -->
+  <g transform="translate(620, 150)">
+    <rect width="520" height="380" rx="14" fill="#1e1b4b" fill-opacity="0.6" stroke="#ec4899" stroke-width="2"/>
+    <rect x="0" y="0" width="520" height="55" rx="14" fill="#be185d"/>
+    <text x="260" y="38" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff">第二部分：120字兩段式作文黃金骨架</text>
+
+    <!-- Paragraph 1 -->
+    <rect x="20" y="75" width="480" height="135" rx="8" fill="#0f172a" stroke="#db2777"/>
+    <text x="35" y="100" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f472b6">第一段（約 50-60 字）：現象描述＋個人觀點</text>
+    <text x="35" y="125" font-family="sans-serif" font-size="13" fill="#cbd5e1">1. [主題背景] "In contemporary society, [Topic] has aroused widespread concern."</text>
+    <text x="35" y="150" font-family="sans-serif" font-size="13" fill="#cbd5e1">2. [核心論點] "From my perspective, [Opinion] is of paramount importance."</text>
+    <text x="35" y="175" font-family="sans-serif" font-size="13" fill="#cbd5e1">3. [承接句] "There are several compelling reasons behind my viewpoint."</text>
+    <text x="35" y="198" font-family="sans-serif" font-weight="bold" font-size="13" fill="#facc15">高分單字：contemporary, widespread concern, paramount</text>
+
+    <!-- Paragraph 2 -->
+    <rect x="20" y="225" width="480" height="135" rx="8" fill="#0f172a" stroke="#db2777"/>
+    <text x="35" y="250" font-family="sans-serif" font-weight="bold" font-size="15" fill="#38bdf8">第二段（約 60-70 字）：個人親身經歷＋行動展望</text>
+    <text x="35" y="275" font-family="sans-serif" font-size="13" fill="#cbd5e1">1. [親身體會] "Taking my personal experience as an illustration, last year I..."</text>
+    <text x="35" y="300" font-family="sans-serif" font-size="13" fill="#cbd5e1">2. [轉折深化] "Although it was challenging initially, I gradually adapted to it."</text>
+    <text x="35" y="325" font-family="sans-serif" font-size="13" fill="#cbd5e1">3. [收尾昇華] "In conclusion, only by taking proactive measures can we..."</text>
+    <text x="35" y="348" font-family="sans-serif" font-weight="bold" font-size="13" fill="#4ade80">倒裝句型加分：Only by V-ing can we achieve...</text>
+  </g>
+
+  <!-- Bottom Transition words table -->
+  <g transform="translate(60, 560)">
+    <rect width="1080" height="200" rx="14" fill="#0f172a" stroke="#475569"/>
+    <text x="40" y="35" font-family="sans-serif" font-weight="bold" font-size="18" fill="#38bdf8">🔗 中級作文高分必備邏輯轉折詞（替代 and / but / so，提升閱卷印象）</text>
+    
+    <rect x="40" y="60" width="240" height="115" rx="8" fill="#1e293b"/>
+    <text x="55" y="88" font-family="sans-serif" font-weight="bold" font-size="15" fill="#facc15">遞進（不用 and）</text>
+    <text x="55" y="112" font-family="sans-serif" font-size="13" fill="#cbd5e1">• Furthermore, ...</text>
+    <text x="55" y="132" font-family="sans-serif" font-size="13" fill="#cbd5e1">• In addition, ...</text>
+    <text x="55" y="152" font-family="sans-serif" font-size="13" fill="#cbd5e1">• What is more, ...</text>
+
+    <rect x="310" y="60" width="240" height="115" rx="8" fill="#1e293b"/>
+    <text x="325" y="88" font-family="sans-serif" font-weight="bold" font-size="15" fill="#f43f5e">轉折（不用 but）</text>
+    <text x="325" y="112" font-family="sans-serif" font-size="13" fill="#cbd5e1">• Nevertheless, ...</text>
+    <text x="325" y="132" font-family="sans-serif" font-size="13" fill="#cbd5e1">• On the contrary, ...</text>
+    <text x="325" y="152" font-family="sans-serif" font-size="13" fill="#cbd5e1">• Nonetheless, ...</text>
+
+    <rect x="580" y="60" width="240" height="115" rx="8" fill="#1e293b"/>
+    <text x="595" y="88" font-family="sans-serif" font-weight="bold" font-size="15" fill="#38bdf8">因果（不用 so）</text>
+    <text x="595" y="112" font-family="sans-serif" font-size="13" fill="#cbd5e1">• Consequently, ...</text>
+    <text x="595" y="132" font-family="sans-serif" font-size="13" fill="#cbd5e1">• As a result, ...</text>
+    <text x="595" y="152" font-family="sans-serif" font-size="13" fill="#cbd5e1">• For this reason, ...</text>
+
+    <rect x="850" y="60" width="240" height="115" rx="8" fill="#1e293b"/>
+    <text x="865" y="88" font-family="sans-serif" font-weight="bold" font-size="15" fill="#4ade80">總結（不用 in the end）</text>
+    <text x="865" y="112" font-family="sans-serif" font-size="13" fill="#cbd5e1">• In conclusion, ...</text>
+    <text x="865" y="132" font-family="sans-serif" font-size="13" fill="#cbd5e1">• To sum up, ...</text>
+    <text x="865" y="152" font-family="sans-serif" font-size="13" fill="#cbd5e1">• All things considered,</text>
+  </g>
+</svg>
