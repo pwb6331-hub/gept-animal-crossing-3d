@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg7" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="cardG1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="cardG2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#fb923c" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="cardG3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="cardG4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.05"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bg7)" rx="24"/>
+  
+  <!-- Header -->
+  <rect x="50" y="40" width="1100" height="95" rx="18" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+  <rect x="75" y="60" width="160" height="34" rx="8" fill="#38bdf8"/>
+  <text x="155" y="83" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="16" font-weight="900" fill="#0f172a" text-anchor="middle">STELLA 初級複試</text>
+  <text x="255" y="84" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="28" font-weight="900" fill="#ffffff">初級說寫 100 必考核心單字圖卡金字塔</text>
+  <text x="75" y="118" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" fill="#94a3b8">涵蓋單句改寫四大金剛、50字連環故事高分動詞、聽音覆述發音關鍵字與15秒回答問題萬用理由詞彙</text>
+
+  <!-- 4 Quadrants -->
+  <!-- Q1: 單句改寫四大金剛 (25字) -->
+  <rect x="50" y="155" width="535" height="285" rx="16" fill="url(#cardG1)" stroke="#f43f5e" stroke-width="1.5"/>
+  <rect x="70" y="175" width="220" height="30" rx="8" fill="#f43f5e"/>
+  <text x="180" y="196" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">01｜單句改寫四大金剛 (25字)</text>
+  <text x="70" y="230" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fda4af">💰 花費金剛：spend (人花時間/金錢 V-ing) ｜ cost (物花錢) ｜ take (It花時間)</text>
+  <text x="70" y="255" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fda4af">🔄 借還轉換：borrow ... from (向人借) ⇄ lend ... to (借給人)</text>
+  <text x="70" y="280" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fda4af">⚡ 喜好選擇：prefer A to B (喜歡A勝過B，介系詞用 to 結構平行)</text>
+  <text x="70" y="305" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fda4af">🎯 使役感官：make / let / have + 原形V ｜ see / notice / hear + V/V-ing</text>
+  <rect x="70" y="325" width="495" height="95" rx="10" fill="#0f172a" fill-opacity="0.8"/>
+  <text x="85" y="350" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">spend, cost, take, pay, afford, borrow, lend, prefer, refuse, decide,</text>
+  <text x="85" y="375" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">expect, promise, remind, suggest, advise, encourage, notice, hear,</text>
+  <text x="85" y="400" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">make, let, have, help, allow, invite, warn</text>
+
+  <!-- Q2: 看圖連環故事高分動詞與形容詞 (25字) -->
+  <rect x="615" y="155" width="535" height="285" rx="16" fill="url(#cardG2)" stroke="#fb923c" stroke-width="1.5"/>
+  <rect x="635" y="175" width="240" height="30" rx="8" fill="#fb923c"/>
+  <text x="755" y="196" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">02｜看圖連環故事亮點詞 (25字)</text>
+  <text x="635" y="230" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fed7aa">⚡ 轉折神副詞：Suddenly (突然間) ｜ unexpected (出乎意料的)</text>
+  <text x="635" y="255" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fed7aa">🏃 動作高分詞：rush (急衝) ｜ drop (掉落) ｜ spill (打翻) ｜ slip (滑倒)</text>
+  <text x="635" y="280" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fed7aa">😊 心情形容詞：relieved (安心的) ｜ grateful (感激的) ｜ exhausted (筋疲力盡)</text>
+  <text x="635" y="305" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fed7aa">🌟 結尾感嘆金句：What an unforgettable and meaningful day!</text>
+  <rect x="635" y="325" width="495" height="95" rx="10" fill="#0f172a" fill-opacity="0.8"/>
+  <text x="650" y="350" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">suddenly, unexpected, crowded, exciting, terrifying, exhausted, relieved,</text>
+  <text x="650" y="375" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">grateful, unforgettable, delicious, clumsy, generous, patient, nervous,</text>
+  <text x="650" y="400" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">curious, drop, spill, slip, rush, rescue, celebrate, apologize, praise, reward</text>
+
+  <!-- Q3: 聽音覆述與短文朗讀必考詞 (25字) -->
+  <rect x="50" y="460" width="535" height="285" rx="16" fill="url(#cardG3)" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="70" y="480" width="220" height="30" rx="8" fill="#10b981"/>
+  <text x="180" y="501" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">03｜覆述與朗讀高頻詞 (25字)</text>
+  <text x="70" y="535" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#a7f3d0">🎙️ 發音避坑：receipt (p不發音 /rɪˈsit/) ｜ schedule (/ˈskɛdʒʊl/)</text>
+  <text x="70" y="560" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#a7f3d0">🚆 交通廣播：passenger (乘客) ｜ platform (月台) ｜ luggage (不可數)</text>
+  <text x="70" y="585" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#a7f3d0">🍲 生活短文：ingredient (食材原料) ｜ recipe (食譜秘方 /ˈrɛsəpi/)</text>
+  <text x="70" y="610" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#a7f3d0">🗣️ 流利度口訣：speak clearly, fluently, and confidently</text>
+  <rect x="70" y="630" width="495" height="95" rx="10" fill="#0f172a" fill-opacity="0.8"/>
+  <text x="85" y="655" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">temperature, forecast, appointment, library, schedule, passenger, luggage,</text>
+  <text x="85" y="680" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">ticket, platform, customer, receipt, discount, convenience, ingredient,</text>
+  <text x="85" y="705" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">recipe, exercise, tournament, champion, practice, improve, pronunciation</text>
+
+  <!-- Q4: 15秒回答問題理由與生活詞 (25字) -->
+  <rect x="615" y="460" width="535" height="285" rx="16" fill="url(#cardG4)" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="635" y="480" width="230" height="30" rx="8" fill="#38bdf8"/>
+  <text x="750" y="501" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">04｜15秒回答問題萬用詞 (25字)</text>
+  <text x="635" y="535" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#bae6fd">✨ 理由三大金句：It is convenient / beneficial / comfortable for me to...</text>
+  <text x="635" y="560" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#bae6fd">🌱 身心減壓：relieve stress, stay energetic and healthy, unwind</text>
+  <text x="635" y="585" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#bae6fd">🏡 社區與人際：peaceful neighborhood, value true friendship</text>
+  <text x="635" y="610" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#bae6fd">🗣️ 3+2 擴充：The primary reason is that... For example, I usually...</text>
+  <rect x="635" y="630" width="495" height="95" rx="10" fill="#0f172a" fill-opacity="0.8"/>
+  <text x="650" y="655" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">convenient, beneficial, comfortable, stressful, healthy, energetic, popular,</text>
+  <text x="650" y="680" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">modern, traditional, hobby, instrument, neighborhood, scenery, environment,</text>
+  <text x="650" y="705" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">friendship, occasion, festival, recommend, reason, communicate, unwind</text>
+
+  <!-- Watermark -->
+  <text x="1130" y="775" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#475569" text-anchor="end">STELLA &amp; JENNY 3D Educational Engine • 115年度英檢專案</text>
+</svg>

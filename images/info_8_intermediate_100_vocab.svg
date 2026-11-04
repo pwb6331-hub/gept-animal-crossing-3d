@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#1e1035"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="cardG5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="cardG6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ec4899" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="cardG7" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="cardG8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bg8)" rx="24"/>
+  
+  <!-- Header -->
+  <rect x="50" y="40" width="1100" height="95" rx="18" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+  <rect x="75" y="60" width="160" height="34" rx="8" fill="#a855f7"/>
+  <text x="155" y="83" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">JENNY 中級複試</text>
+  <text x="255" y="84" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="28" font-weight="900" fill="#ffffff">中級說寫 100 必考核心單字圖卡論述矩陣</text>
+  <text x="75" y="118" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" fill="#94a3b8">涵蓋中譯英官方黃金搭配詞、120字兩段式高分轉折詞、PREP答題法理由架構詞與90秒看圖空間推論詞彙</text>
+
+  <!-- 4 Quadrants -->
+  <!-- Q5: 中譯英官方聽診室黃金搭配詞 (25字) -->
+  <rect x="50" y="155" width="535" height="285" rx="16" fill="url(#cardG5)" stroke="#8b5cf6" stroke-width="1.5"/>
+  <rect x="70" y="175" width="240" height="30" rx="8" fill="#8b5cf6"/>
+  <text x="190" y="196" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">05｜中譯英搭配詞庫 (25字)</text>
+  <text x="70" y="230" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#ddd6fe">🔍 視野與習慣：broaden one's horizons ｜ develop a habit of V-ing</text>
+  <text x="70" y="255" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#ddd6fe">🌲 大自然糾錯：get close to nature (✓) ｜ 嚴禁 contact nature (✗)</text>
+  <text x="70" y="280" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#ddd6fe">💎 文化與資源：preserve cultural heritage ｜ cherish natural resources</text>
+  <text x="70" y="305" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#ddd6fe">⚖️ 關鍵措施：take effective measures ｜ play a critical / vital role in</text>
+  <rect x="70" y="325" width="495" height="95" rx="10" fill="#0f172a" fill-opacity="0.8"/>
+  <text x="85" y="350" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">horizon, broaden, cultivate, acquire, approach, cherish, preserve, allocate,</text>
+  <text x="85" y="375" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">consequence, contribute, prevent, severe, critical, indispensable, fundamental,</text>
+  <text x="85" y="400" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">substantial, efficient, effective, contact, habit, environment, pollution, protect</text>
+
+  <!-- Q6: 120字引導寫作高分論述與轉折詞 (25字) -->
+  <rect x="615" y="155" width="535" height="285" rx="16" fill="url(#cardG6)" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="635" y="175" width="240" height="30" rx="8" fill="#ec4899"/>
+  <text x="755" y="196" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">06｜120字論述轉折詞 (25字)</text>
+  <text x="635" y="230" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fbcfe8">👑 頂級轉折：Nevertheless (然而) ｜ Furthermore (此外) ｜ Consequently</text>
+  <text x="635" y="255" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fbcfe8">⚖️ 兩立對比：whereas (然而反之) ｜ On the other hand (另一方面)</text>
+  <text x="635" y="280" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fbcfe8">💡 視角與因素：from my perspective ｜ a crucial factor in achieving success</text>
+  <text x="635" y="305" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fbcfe8">🏆 克服與總結：overcome obstacles ｜ In conclusion, the merits outweigh</text>
+  <rect x="635" y="325" width="495" height="95" rx="10" fill="#0f172a" fill-opacity="0.8"/>
+  <text x="650" y="350" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">nevertheless, furthermore, consequently, whereas, similarly, undoubtedly,</text>
+  <text x="650" y="375" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">perspective, aspect, factor, phenomenon, trend, potential, obstacle,</text>
+  <text x="650" y="400" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">challenge, overcome, accomplish, achieve, emphasize, illustrate, demonstrate</text>
+
+  <!-- Q7: PREP答題法觀點與理由詞 (25字) -->
+  <rect x="50" y="460" width="535" height="285" rx="16" fill="url(#cardG7)" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="70" y="480" width="220" height="30" rx="8" fill="#f59e0b"/>
+  <text x="180" y="501" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">07｜PREP觀點架構詞 (25字)</text>
+  <text x="70" y="535" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fde68a">🎯 P-立場 (01~05s)：From my viewpoint, I am fully convinced that...</text>
+  <text x="70" y="560" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fde68a">⚖️ R-理由 (06~13s)：The primary reason is the vital advantage of...</text>
+  <text x="70" y="585" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fde68a">📖 E-實例 (14~25s)：For instance, it fosters teamwork and responsibility</text>
+  <text x="70" y="610" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#fde68a">🏁 P-總結 (26~30s)：Therefore, there is no doubt that it has a profound impact</text>
+  <rect x="70" y="630" width="495" height="95" rx="10" fill="#0f172a" fill-opacity="0.8"/>
+  <text x="85" y="655" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">viewpoint, opinion, strongly, convinced, definitely, primary, crucial,</text>
+  <text x="85" y="680" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">vital, advantage, disadvantage, benefit, drawback, impact, influence,</text>
+  <text x="85" y="705" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">atmosphere, interaction, communication, expression, cooperation, teamwork</text>
+
+  <!-- Q8: 90秒看圖敘述與情境推論詞 (25字) -->
+  <rect x="615" y="460" width="535" height="285" rx="16" fill="url(#cardG8)" stroke="#06b6d4" stroke-width="1.5"/>
+  <rect x="635" y="480" width="240" height="30" rx="8" fill="#06b6d4"/>
+  <text x="755" y="501" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">08｜90秒看圖空間與推論 (25字)</text>
+  <text x="635" y="535" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#a5f3fc">🧭 空間掃描：In the foreground (前景) ｜ In the background (背景)</text>
+  <text x="635" y="560" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#a5f3fc">🧍 主角神態：welcoming gesture ｜ upright posture ｜ stroll leisurely</text>
+  <text x="635" y="585" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#a5f3fc">🔮 推論神詞：seemingly, apparently, noticeably, evidently indicate...</text>
+  <text x="635" y="610" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="13" font-weight="bold" fill="#a5f3fc">🌟 昇華結尾：reflect the vibrancy ｜ a truly memorable &amp; meaningful day</text>
+  <rect x="635" y="630" width="495" height="95" rx="10" fill="#0f172a" fill-opacity="0.8"/>
+  <text x="650" y="655" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">foreground, background, surroundings, circumstance, gesture, expression,</text>
+  <text x="650" y="680" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">posture, stroll, gather, participate, enthusiastically, leisurely, noticeably,</text>
+  <text x="650" y="705" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#e2e8f0">seemingly, apparently, evidently, reflect, indicate, represent, memorable</text>
+
+  <!-- Watermark -->
+  <text x="1130" y="775" font-family="'Noto Sans TC', 'Source Han Sans', sans-serif" font-size="12" fill="#475569" text-anchor="end">STELLA &amp; JENNY 3D Educational Engine • 115年度英檢專案</text>
+</svg>
