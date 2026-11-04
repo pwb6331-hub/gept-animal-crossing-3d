@@ -516,15 +516,15 @@ const CHAPTER_DATA = {
     videos: [
       {
         title: '1-1 初級寫作破題：單句改寫與合併三大神技',
-        duration: '06:45',
+        duration: '01:16',
         desc: '資深名師拆解 not only... but also、too... to 與花費四大金剛，教你 3 秒抓出出題委員空格伏筆。',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+        url: 'videos/v1_1.mp4'
       },
       {
         title: '1-2 初級看圖寫作：50字三格連環故事「起承轉合」魔術模板',
-        duration: '07:20',
+        duration: '01:06',
         desc: '實戰拆解高頻連環圖題型，傳授過去式時態鎖定法與情節轉折形容詞加分技巧。',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+        url: 'videos/v1_2.mp4'
       }
     ]
   },
@@ -685,15 +685,15 @@ const CHAPTER_DATA = {
     videos: [
       {
         title: '2-1 初級口說聽音覆述：5 秒短期記憶錨定與發音盲點',
-        duration: '06:10',
+        duration: '01:06',
         desc: '實戰演示如何抓住動詞骨架，克制緊張感，精準複製英語母語腔調與句尾時態音。',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+        url: 'videos/v2_1.mp4'
       },
       {
         title: '2-2 初級朗讀短文與回答問題：意群斷句 (Chunking) 與升降調',
-        duration: '08:15',
+        duration: '01:03',
         desc: '掌握標點與連接詞停頓節奏，示範 3+2 回答問題黃金模板，徹底告別單字化回答。',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4'
+        url: 'videos/v2_2.mp4'
       }
     ]
   },
@@ -842,15 +842,15 @@ const CHAPTER_DATA = {
     videos: [
       {
         title: '3-1 中級中譯英突破：200 黃金搭配詞與分詞構句逆襲',
-        duration: '09:12',
+        duration: '01:01',
         desc: 'JENNY 總指揮官直擊官方聽診室 76 個高頻盲點單字，示範如何將中文字眼昇華為地道母語英文句型。',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'
+        url: 'videos/v3_1.mp4'
       },
       {
         title: '3-2 中級 120 字引導寫作：兩段式黃金骨架與高分轉折詞',
-        duration: '10:35',
+        duration: '00:57',
         desc: '解構 120 字作文段落分配、主題句設計與個人實例鋪陳，教你用倒裝句與分詞修飾拿下滿分。',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4'
+        url: 'videos/v3_2.mp4'
       }
     ]
   },
@@ -1025,15 +1025,15 @@ const CHAPTER_DATA = {
     videos: [
       {
         title: '4-1 中級短文朗讀與深入回答：PREP 答題法與流利度評分標準',
-        duration: '08:40',
+        duration: '01:00',
         desc: '老船長奧利瑪親自演示中級口說全真測驗，拆解連音同化技巧與 30 秒深入問題論述心法。',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4'
+        url: 'videos/v4_1.mp4'
       },
       {
         title: '4-2 中級看圖敘述 90 秒實戰：時態一致性與 3W1H 細節鋪陳',
-        duration: '11:05',
+        duration: '01:07',
         desc: '以大理石演講台 90 秒雙色計時沙漏為例，全景到特寫四段式配速，杜絕卡頓與時態混亂。',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
+        url: 'videos/v4_2.mp4'
       }
     ]
   }
@@ -1317,7 +1317,7 @@ function renderVideoView(container, unit) {
         
         <!-- 模擬影片播放器 -->
         <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-950 border border-white/10 group">
-          <video id="video-player-${currentUnitCode}-${idx}" class="w-full h-full object-cover" controls preload="metadata" src="${v.url}"></video>
+          <video id="video-player-${currentUnitCode}-${idx}" class="w-full h-full object-contain bg-slate-950" controls playsinline preload="auto" onplay="onUnitVideoPlay(this)" src="${v.url}#t=0.1"></video>
         </div>
 
         <div class="flex items-center justify-between pt-1 text-[11px]">
@@ -1334,11 +1334,21 @@ function renderVideoView(container, unit) {
   container.innerHTML = html;
 }
 
+function onUnitVideoPlay(activeVideo) {
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  const videos = document.querySelectorAll('video');
+  videos.forEach(v => {
+    if (v !== activeVideo && !v.paused) v.pause();
+  });
+}
+
 function playUnitVideo(unitCode, idx) {
-  pauseAllVideos();
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   const v = document.getElementById(`video-player-${unitCode}-${idx}`);
   if (v) {
-    v.play();
+    onUnitVideoPlay(v);
+    v.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    v.play().catch(err => console.warn('Video play error:', err));
   }
 }
 
